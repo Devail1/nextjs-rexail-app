@@ -6,9 +6,10 @@ import StoreItem from "../components/storeItem";
 import List from "../components/list";
 
 import categories from "../../mockData.json"
+import {useState} from "react";
 
 const Store: NextPage = () => {
-    let selectedCategory: TProduct[] = categories[0].children
+    const [selectedCategory, setSelectedCategory] = useState<TCategory>(categories[0])
 
     return (
         <div>
@@ -21,16 +22,29 @@ const Store: NextPage = () => {
                 <ul className="container mx-auto h-full display-flex align-center justify-evenly font-gray-900">
                     <List<TCategory> items={categories.slice(0, 10)} renderItem={(item) =>
                         <li key={item.id} className="category">
-                            <button type="button">{item.name}&nbsp;</button>
+                            <button type="button" onClick={() => setSelectedCategory(item)}>{item.name}&nbsp;</button>
                         </li>
                     }/>
+                    {categories.length > 10 &&
+                        <ul className="category show-more-categories">
+                            עוד
+                            <ul className="categories-show-more display-flex flex-vertical absolute pt-10 rounded-10">
+                                <List<TCategory> items={categories.slice(10, categories.length)} renderItem={(item) =>
+                                    <li key={item.id} className="category show-more">
+                                        <button type="button"
+                                                onClick={() => setSelectedCategory(item)}>{item.name}&nbsp;</button>
+                                    </li>
+                                }/>
+                            </ul>
+                        </ul>
+                    }
                 </ul>
             </nav>
             <div className="container mx-auto">
 
                 <div className="store-items-wrapper mt-30">
-                    <List<TProduct> items={selectedCategory} renderItem={(item) =>
-                        <StoreItem key={item.id} currencySign="₪" product={item} />
+                    <List<TProduct> items={selectedCategory.children} renderItem={(item) =>
+                        <StoreItem key={item.id} currencySign="₪" product={item}/>
                     }/>
                 </div>
             </div>

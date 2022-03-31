@@ -248,12 +248,24 @@ body {
   background-color: #f5f3f0;
 }
 
+
+.category.show-more-categories {
+  visibility: visible;
+}
+
+.categories-show-more {
+    visibility: hidden;
+}
+
+.category.show-more-categories:hover > .categories-show-more{
+  visibility: visible;
+}
+
 .show-more-categories:hover {
   margin-bottom: 0;
 }
 
 .categories-show-more {
-  right: -15px;
   margin-top: 15px;
   background-color: #ffffff;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
