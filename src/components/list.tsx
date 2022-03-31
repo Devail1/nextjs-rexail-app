@@ -8,9 +8,7 @@ interface Props<T> {
 const List = <T extends unknown>(props: Props<T>) => {
     const {items, renderItem} = props;
     return (
-        <>
-            {items.map(renderItem)}
-        </>
+        <>{items.map(renderItem)}</>
     );
 };
 

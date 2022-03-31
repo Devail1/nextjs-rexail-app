@@ -40,14 +40,64 @@ const Store: NextPage = () => {
                     }
                 </ul>
             </nav>
-            <div className="container mx-auto">
-
-                <div className="store-items-wrapper mt-30">
-                    <List<TProduct> items={selectedCategory.children} renderItem={(item) =>
-                        <StoreItem key={item.id} currencySign="₪" product={item}/>
-                    }/>
+            <div className="container mx-auto pt-20">
+                <div className="display-flex relative">
+                    <div className="store-widget">
+                        <h1 className="font-heebo font-blue">
+                            {selectedCategory.name}
+                        </h1>
+                        <div className="store-items-wrapper mt-30">
+                            <List<TProduct> items={selectedCategory.children} renderItem={(item) =>
+                                <StoreItem key={item.id} currencySign="₪" product={item}/>
+                            }/>
+                        </div>
+                    </div>
+                    <div className="cart-preview-wrapper">
+                        <section className="cart-preview">
+                            <div className="cart-preview-header display-flex align-center px-16">
+                                <img className="w-22 h-22 ml-10" src="/icons/button-arrow-up.svg"/>
+                                <img className="icon-basket" src="/icons/icon-basket-green.svg"/>
+                                <span className="text-sm font-white mt-8 cart-preview-items-count"></span>
+                                <div className="display-flex flex-vertical font-white mr-8 ml-auto">
+                                    <span className="text-weight-300 font-size-14">סל הקניות שלי</span>
+                                    <span className="font-size-18">₪0.00</span>
+                                </div>
+                                <button type="button" className="proceed-to-checkout-btn font-white font-size-16">
+                                    <span> <a href="#">המשך לתשלום</a> </span>
+                                </button>
+                            </div>
+                            <div className="cart-preview-subheader px-16">
+                                <button type="button" className="c-p display-flex align-center h-full w-85 mr-auto">
+                                    <img src="/icons/icon-trash.svg"/>
+                                    <span className="mr-5 font-size-14"> מחיקת סל </span>
+                                </button>
+                            </div>
+                            <div className="cart-items-preview-wrapper">
+                                <div className="display-flex flex-vertical align-center pt-20">
+                                    <img src="/images/empty-basket.png"/>
+                                    <span
+                                        className="mt-10 font-size-22 font-blue text-weight-700 font-heebo">סל הקניות שלכם ריק</span>
+                                    <span className="font-blue font-size-16">התחילו להוסיף מוצרים</span>
+                                </div>
+                            </div>
+                            <div
+                                className="cart-preview-footer px-28 display-flex flex-vertical align-center justify-center">
+                                <button type="button" className="btn-green w-full">
+                                    <a href="#" className="w-full h-full">
+                                        <div className="display-flex align-center justify-between h-full">
+                                    <span
+                                        className="font-heebo text-weight-500 font-white checkout-text">המשך לתשלום</span>
+                                            <span className="font-heebo text-weight-500 font-white total-sum">₪0.00</span>
+                                        </div>
+                                    </a>
+                                </button>
+                                <span className="font-darkgray font-size-14 mt-5">שערוך. עלות סופית לפני שקילה.</span>
+                            </div>
+                        </section>
+                    </div>
                 </div>
             </div>
+
         </div>
     )
 }
