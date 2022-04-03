@@ -1,15 +1,13 @@
-import {ReactNode, useState} from "react";
+import { ReactNode } from "react";
 
-interface Props<T> {
-    items: T[];
-    renderItem: (item: T) => ReactNode;
+interface ListProps<T> {
+  items: T[];
+  renderItem: (item: T) => ReactNode;
 }
 
-const List = <T extends unknown>(props: Props<T>) => {
-    const {items, renderItem} = props;
-    return (
-        <>{items.map(renderItem)}</>
-    );
+const List = <T extends unknown>(props: ListProps<T>) => {
+  const { items, renderItem } = props;
+  return <>{items?.map(renderItem)}</>;
 };
 
-export default List
+export default List;
