@@ -8,6 +8,7 @@ import Head from "next/head";
 import StoreItem from "components/StoreItem";
 import List from "components/List";
 import DataContext from "context/DataContext";
+
 const Store: NextPage = () => {
   const { productsData } = useContext(DataContext);
 
