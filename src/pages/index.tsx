@@ -31,7 +31,10 @@ const Store: NextPage = () => {
           <List<TCategory>
             items={productsData.slice(0, 10)}
             renderItem={(item) => (
-              <li key={item.id} className="category">
+              <li
+                key={item.id}
+                className={selectedCategory?.id === item.id ? "category selected" : "category"}
+              >
                 <button type="button" onClick={() => setSelectedCategory(item)}>
                   {item.name}&nbsp;
                 </button>
