@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import { TCategory, TProduct } from "types";
-import { StoreDataType } from "context/dataContext";
+import { TDataContextProvider } from "context/DataContext";
+
 export const useFetchData = () => {
-  const [appData, setAppData] = useState<{ storeData: StoreDataType; productsData: TCategory[] }>({
-    storeData: { name: "" },
-    productsData: [],
-  });
+  const [appData, setAppData] = useState<TDataContextProvider>({} as TDataContextProvider);
 
   useEffect(() => {
     fetchData();

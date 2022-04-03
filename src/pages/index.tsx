@@ -7,14 +7,15 @@ import { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import StoreItem from "components/StoreItem";
 import List from "components/List";
-import DataContext from "context/dataContext";
+import DataContext from "context/DataContext";
 const Store: NextPage = () => {
   const { productsData } = useContext(DataContext);
+  console.log("~ productsData", productsData);
 
-  const [selectedCategory, setSelectedCategory] = useState<TCategory | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
   useEffect(() => {
-    if (productsData.length) {
+    if (productsData) {
       setSelectedCategory(productsData[0]);
     }
   }, [productsData]);
@@ -29,7 +30,7 @@ const Store: NextPage = () => {
       <nav id="categories" className="categories-wrapper">
         <ul className="container mx-auto h-full display-flex align-center justify-evenly font-gray-900">
           <List<TCategory>
-            items={productsData.slice(0, 10)}
+            items={productsData?.slice(0, 10)}
             renderItem={(item) => (
               <li
                 key={item.id}
@@ -46,7 +47,7 @@ const Store: NextPage = () => {
               <span>עוד</span>
               <ul className="categories-show-more display-flex flex-vertical absolute pt-10 rounded-10">
                 <List<TCategory>
-                  items={productsData.slice(10, productsData.length)}
+                  items={productsData?.slice(10, productsData.length)}
                   renderItem={(item) => (
                     <li key={item.id} className="category show-more">
                       <button type="button" onClick={() => setSelectedCategory(item)}>

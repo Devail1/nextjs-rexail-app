@@ -1,9 +1,8 @@
-import DataContext from "context/dataContext";
+import DataContext from "context/DataContext";
 import { useContext } from "react";
 
 const HeaderMenu = () => {
   const { storeData } = useContext(DataContext);
-  console.log("~ storeData", storeData);
 
   return (
     <header>
