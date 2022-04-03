@@ -1,9 +1,6 @@
 import { createContext } from "react";
-import { TCategory } from "types";
+import { TCategory, TStoreData } from "types";
 
-const DataContext = createContext<{ storeData: object; productsData: TCategory[] }>({
-  storeData: {},
-  productsData: [],
-});
+const DataContext = createContext<{ storeData: TStoreData; productsData: TCategory[] }>(null!);
 
 export default DataContext;

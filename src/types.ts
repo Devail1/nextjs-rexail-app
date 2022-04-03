@@ -1,3 +1,49 @@
+export interface TStoreData {
+  name: string;
+  businessAddressFormatted: string;
+  businessEmail: string;
+  businessPhone: string;
+  store: TStore;
+  domain: string;
+  jsonWebEncryption: string;
+  captchaType: null;
+  themeJson: string;
+  logoPath: null;
+  favoriteIconPath: null;
+  coverDesktopImagePath: null;
+  coverMobileImagePath: null;
+  genericProductsDefaultImagePath: null;
+  mainCategoryMobileLogoPath: null;
+  facebookLink: string;
+  descriptionForCustomers: string;
+  promotionalText: string;
+  externalWebTrackingAccounts: string;
+  banners: any[];
+  contentPages: TContentPage[];
+  metadataJson: string;
+  settingsJson: string;
+  updateDate: number;
+}
+
+export interface TContentPage {
+  name: string;
+  type: string;
+  published: boolean;
+  id: string;
+}
+
+export interface TStore {
+  id: number;
+  name: string;
+  businessEmail: string;
+  businessNumber: string;
+  businessPhone: string;
+  businessFullAddressWithCity: string;
+  addressCoordinates: string;
+  worksWithStoreCoupons: boolean;
+  performSellingUnitsEstimationLearning: boolean;
+}
+
 export interface TCategory {
   id: number;
   name: string;

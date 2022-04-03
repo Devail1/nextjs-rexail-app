@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { TCategory, TProduct } from "types";
-
+import { StoreDataType } from "context/dataContext";
 export const useFetchData = () => {
-  const [appData, setAppData] = useState<{ storeData: object; productsData: TCategory[] }>({
-    storeData: {},
+  const [appData, setAppData] = useState<{ storeData: StoreDataType; productsData: TCategory[] }>({
+    storeData: { name: "" },
     productsData: [],
   });
 
