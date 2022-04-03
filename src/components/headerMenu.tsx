@@ -29,7 +29,7 @@ const HeaderMenu = () => {
           <div className="display-flex align-center mt-30">
             <img src="/images/logo.png" />
             <div>
-              <div className="text-title mb-5">{storeData.name}</div>
+              <div className="text-title mb-5">{storeData?.name}</div>
               <div className="display-flex align-center my-3 c-p">
                 <svg className="ml-5 font-white" width="16px" height="16px" viewBox="0 0 16 16" version="1.1">
                   <title>5787A4CF-E477-4052-B600-AC339D58DC01</title>
@@ -59,7 +59,7 @@ const HeaderMenu = () => {
               </div>
               <div className="display-flex align-center my-3 c-p">
                 <img className="ml-5" src="/icons/icon-location-2.svg" />
-                {storeData.store.businessFullAddressWithCity}
+                {storeData?.store?.businessFullAddressWithCity}
               </div>
             </div>
           </div>
