@@ -1,5 +1,5 @@
-import HeaderMenu from './headerMenu'
-import FooterMenu from './footerMenu'
+import HeaderMenu from 'components/HeaderMenu'
+import FooterMenu from 'components/FooterMenu'
 import {ReactNode} from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {

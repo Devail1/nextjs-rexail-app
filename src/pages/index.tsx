@@ -1,16 +1,15 @@
 import type {NextPage} from 'next'
-import {TCategory, TProduct} from "../../types";
+import {TCategory, TProduct} from "types";
+import {useState} from "react";
 
 import Head from 'next/head'
-import StoreItem from "../components/storeItem";
-import List from "../components/list";
+import StoreItem from "components/StoreItem";
+import List from "components/List";
+import categories from "mockData.json"
 
-import categories from "../../mockData.json"
-import {useState} from "react";
 
 const Store: NextPage = () => {
     const [selectedCategory, setSelectedCategory] = useState<TCategory>(categories[0])
-
     return (
         <div>
             <Head>
