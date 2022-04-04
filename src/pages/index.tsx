@@ -7,10 +7,10 @@ import { useContext, useEffect, useState } from "react";
 import Head from "next/head";
 import StoreItem from "components/StoreItem";
 import List from "components/List";
-import DataContext from "context/DataContext";
+import { DataContext } from "pages/_app";
 
-const Store: NextPage = () => {
-  const { productsData } = useContext(DataContext);
+const Store: NextPage = (props: any) => {
+  const { productsData, cartItems } = useContext(DataContext);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
@@ -20,6 +20,16 @@ const Store: NextPage = () => {
     }
   }, [productsData]);
 
+  const handleAddProduct = (product: TProduct) => {
+    if (!product.quantity || product.quantity < product.primaryQuantityUnit.maxAmount) {
+      product.quantity = product.quantity
+        ? product.quantity + product.primaryQuantityUnit.sellingUnit.amountJumps
+        : product.primaryQuantityUnit.sellingUnit.amountJumps;
+      !cartItems.includes(product) && cartItems.unshift(product);
+      // cartTotal = service.calculateTotal();
+    }
+    console.log("file: index.tsx ~ line 29 ~ cartItems", cartItems);
+  };
   return (
     <div>
       <Head>
@@ -68,7 +78,9 @@ const Store: NextPage = () => {
             <div className="store-items-wrapper mt-30">
               <List<TProduct>
                 items={selectedCategory?.children!}
-                renderItem={(item) => <StoreItem key={item.id} currencySign="₪" product={item} />}
+                renderItem={(item) => (
+                  <StoreItem key={item.id} currencySign="₪" product={item} onAddProduct={handleAddProduct} />
+                )}
               />
             </div>
           </div>

@@ -1,4 +1,4 @@
-import DataContext from "context/DataContext";
+import { DataContext } from "pages/_app";
 import { useContext } from "react";
 
 const HeaderMenu = () => {

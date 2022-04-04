@@ -3,17 +3,27 @@ import App from "next/app";
 
 import type { AppProps } from "next/app";
 import Layout from "components/Layout";
-import DataContext from "context/DataContext";
-import { TProduct, TStoreData } from "types";
+import { TCategory, TProduct, TStoreData } from "types";
 import { formatData } from "utils";
+import { createContext } from "react";
 
 interface MyAppProps extends AppProps {
   storeData: TStoreData;
-  productsData: TProduct[];
+  productsData: TCategory[];
+  cartItems: TProduct[];
 }
-function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
+
+export type TDataContextProvider = {
+  storeData: TStoreData;
+  productsData: TCategory[];
+  cartItems: TProduct[];
+};
+
+export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
+
+function MyApp({ Component, pageProps, storeData, productsData, cartItems = [] }: MyAppProps) {
   return (
-    <DataContext.Provider value={{ storeData, productsData }}>
+    <DataContext.Provider value={{ storeData, productsData, cartItems }}>
       <Layout>
         <Component {...pageProps} />
       </Layout>
