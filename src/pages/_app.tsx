@@ -32,6 +32,10 @@ function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
 }
 
 MyApp.getInitialProps = async (appContext: any) => {
+  // calls page's `getInitialProps` and fills `appProps.pageProps`
+  const appProps = await App.getInitialProps(appContext);
+
+  // if (appContext.router.pathname === "/") {
   // Call an external API endpoint to get store data.
   const res1 = await fetch(
     "https://test.rexail.co.il/client/public/store/website?domain=testeitan.rexail.co.il"
@@ -45,9 +49,6 @@ MyApp.getInitialProps = async (appContext: any) => {
   );
   const response2 = await res2.json();
   const productsData = formatData(response2.data);
-
-  // calls page's `getInitialProps` and fills `appProps.pageProps`
-  const appProps = await App.getInitialProps(appContext);
 
   let appData = { storeData, productsData };
 

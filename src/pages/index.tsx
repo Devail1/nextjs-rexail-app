@@ -9,8 +9,10 @@ import StoreItem from "components/StoreItem";
 import List from "components/List";
 import { DataContext } from "pages/_app";
 import SideCartItem from "components/SideCartItem";
-
+import Link from "next/link";
+import { useRouter } from "next/router";
 const Store: NextPage = () => {
+  const router = useRouter();
   const { cartState, cartActions } = useCartState();
   const { productsData } = useContext(DataContext);
 
@@ -44,7 +46,7 @@ const Store: NextPage = () => {
               </li>
             )}
           />
-          {productsData.length > 10 && (
+          {productsData.length > 10 ? (
             <ul className="category show-more-categories">
               <span>עוד</span>
               <ul className="categories-show-more display-flex flex-vertical absolute pt-10 rounded-10">
@@ -60,6 +62,8 @@ const Store: NextPage = () => {
                 />
               </ul>
             </ul>
+          ) : (
+            ""
           )}
         </ul>
       </nav>
@@ -96,10 +100,14 @@ const Store: NextPage = () => {
                     {cartState.cartTotal}
                   </span>
                 </div>
-                <button type="button" className="proceed-to-checkout-btn font-white font-size-16">
+                <button
+                  type="button"
+                  className="proceed-to-checkout-btn font-white font-size-16"
+                  disabled={!cartState.cartItems.length}
+                  onClick={() => router.push("/cart", undefined, { shallow: true })}
+                >
                   <span>
-                    {" "}
-                    <a href="#">המשך לתשלום</a>{" "}
+                    <a>המשך לתשלום</a>
                   </span>
                 </button>
               </div>
@@ -137,16 +145,20 @@ const Store: NextPage = () => {
                 )}
               </div>
               <div className="cart-preview-footer px-28 display-flex flex-vertical align-center justify-center">
-                <button type="button" className="btn-green w-full">
-                  <a href="#" className="w-full h-full">
-                    <div className="display-flex align-center justify-between h-full">
-                      <span className="font-heebo text-weight-500 font-white checkout-text">המשך לתשלום</span>
-                      <span className="font-heebo text-weight-500 font-white total-sum">
-                        {cartState.currencySign}
-                        {cartState.cartTotal}
-                      </span>
-                    </div>
-                  </a>
+                <button type="button" className="btn-green w-full" disabled={!cartState.cartItems.length}>
+                  <Link href={!cartState.cartItems.length ? "#" : "/cart"} shallow={true}>
+                    <a className="w-full h-full">
+                      <div className="display-flex align-center justify-between h-full">
+                        <span className="font-heebo text-weight-500 font-white checkout-text">
+                          המשך לתשלום
+                        </span>
+                        <span className="font-heebo text-weight-500 font-white total-sum">
+                          {cartState.currencySign}
+                          {cartState.cartTotal}
+                        </span>
+                      </div>
+                    </a>
+                  </Link>
                 </button>
                 <span className="font-darkgray font-size-14 mt-5">שערוך. עלות סופית לפני שקילה.</span>
               </div>
@@ -159,3 +171,9 @@ const Store: NextPage = () => {
 };
 
 export default Store;
+
+export async function getServerSideProps(context: any) {
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+}
