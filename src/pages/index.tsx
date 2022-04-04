@@ -8,9 +8,10 @@ import Head from "next/head";
 import StoreItem from "components/StoreItem";
 import List from "components/List";
 import { DataContext } from "pages/_app";
+import SideCartItem from "components/SideCartItem";
 
 const Store: NextPage = () => {
-  const { cartState, onIncreaseProductQuantity, onDecreaseProductQuantity, onClearCart } = useCartState();
+  const { cartState, cartActions } = useCartState();
   const { productsData } = useContext(DataContext);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
@@ -74,8 +75,7 @@ const Store: NextPage = () => {
                     key={item.id}
                     currencySign={cartState.currencySign}
                     product={item}
-                    onIncreaseProductQuantity={onIncreaseProductQuantity}
-                    onDecreaseProductQuantity={onDecreaseProductQuantity}
+                    cartActions={cartActions}
                   />
                 )}
               />
@@ -107,20 +107,34 @@ const Store: NextPage = () => {
                 <button
                   type="button"
                   className="c-p display-flex align-center h-full w-85 mr-auto"
-                  onClick={onClearCart}
+                  onClick={cartActions.onClearCart}
                 >
                   <img src="/icons/icon-trash.svg" />
                   <span className="mr-5 font-size-14"> מחיקת סל </span>
                 </button>
               </div>
               <div className="cart-items-preview-wrapper">
-                <div className="display-flex flex-vertical align-center pt-20">
-                  <img src="/images/empty-basket.png" />
-                  <span className="mt-10 font-size-22 font-blue text-weight-700 font-heebo">
-                    סל הקניות שלכם ריק
-                  </span>
-                  <span className="font-blue font-size-16">התחילו להוסיף מוצרים</span>
-                </div>
+                {!cartState.cartItems.length ? (
+                  <div className="display-flex flex-vertical align-center pt-20">
+                    <img src="/images/empty-basket.png" />
+                    <span className="mt-10 font-size-22 font-blue text-weight-700 font-heebo">
+                      סל הקניות שלכם ריק
+                    </span>
+                    <span className="font-blue font-size-16">התחילו להוסיף מוצרים</span>
+                  </div>
+                ) : (
+                  <List<TProduct>
+                    items={cartState.cartItems}
+                    renderItem={(item) => (
+                      <SideCartItem
+                        key={item.id}
+                        currencySign={cartState.currencySign}
+                        product={item}
+                        cartActions={cartActions}
+                      />
+                    )}
+                  />
+                )}
               </div>
               <div className="cart-preview-footer px-28 display-flex flex-vertical align-center justify-center">
                 <button type="button" className="btn-green w-full">

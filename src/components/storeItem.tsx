@@ -1,19 +1,16 @@
-import { useCartState } from "hooks/useCartState";
-import { TProduct } from "types";
+import { TProduct, Unit } from "types";
 
 interface Props {
   product: TProduct;
   currencySign: string;
-  onIncreaseProductQuantity(product: TProduct): void;
-  onDecreaseProductQuantity(product: TProduct): void;
+  cartActions: {
+    onIncreaseProductQuantity(product: TProduct): void;
+    onDecreaseProductQuantity(product: TProduct): void;
+    onUnitTypeChange(product: TProduct, newQuantityUnit: Unit): void;
+  };
 }
 
-const StoreItem = ({
-  product,
-  currencySign,
-  onIncreaseProductQuantity,
-  onDecreaseProductQuantity,
-}: Props) => {
+const StoreItem = ({ product, currencySign, cartActions }: Props) => {
   let {
     fullName,
     price,
@@ -27,8 +24,6 @@ const StoreItem = ({
     currentRelevancy,
     productQuality,
   } = product;
-
-  // const { onIncreaseProductQuantity /*onUnitTypeChange*/ } = useCartState();
 
   return (
     <div className="store-item rounded-10 display-flex flex-vertical align-center justify-around">
@@ -98,7 +93,7 @@ const StoreItem = ({
           <div className="toggle-unit-wrapper display-flex flex-vertical align-center">
             <div className="toggle-unit-container">
               <ul className="display-flex justify-center align-center">
-                {productSellingUnits.map((productSellingUnit: any) => {
+                {productSellingUnits.map((productSellingUnit: Unit) => {
                   return (
                     <li
                       key={productSellingUnit.id}
@@ -112,7 +107,7 @@ const StoreItem = ({
                       <button
                         className="h-full"
                         type="button"
-                        // onClick={onUnitTypeChange(product, productSellingUnit)}
+                        onClick={() => cartActions.onUnitTypeChange(product, productSellingUnit)}
                       >
                         {productSellingUnit.sellingUnit.name}
                       </button>
@@ -126,7 +121,7 @@ const StoreItem = ({
             <button
               type="button"
               className="add-to-cart-btn"
-              onClick={() => onIncreaseProductQuantity(product)}
+              onClick={() => cartActions.onIncreaseProductQuantity(product)}
             >
               <img src="/icons/icon-plus.svg" />
               <span className="mr-5 text-weight-500"> הוספה לסל </span>
@@ -136,7 +131,7 @@ const StoreItem = ({
               <button
                 type="button"
                 className="h-full w-full"
-                onClick={() => onIncreaseProductQuantity(product)}
+                onClick={() => cartActions.onIncreaseProductQuantity(product)}
               >
                 <img src="/icons/icon-plus.svg" />
               </button>
@@ -144,7 +139,7 @@ const StoreItem = ({
               <button
                 type="button"
                 className=" h-full w-full"
-                onClick={() => onDecreaseProductQuantity(product)}
+                onClick={() => cartActions.onDecreaseProductQuantity(product)}
               >
                 <img className="mb-4" src="/icons/icon-minus.svg" />
               </button>
@@ -152,7 +147,7 @@ const StoreItem = ({
           )}
         </div>
       </div>
-      {promoted && (
+      {promoted ? (
         <div className=" discount-badge-v badge-sm">
           <div className=" display-flex flex-vertical align-center">
             <img className="h-16 w-16 font-green mt-3" src="/icons/icon-discount.svg" alt="item-discount" />
@@ -161,6 +156,8 @@ const StoreItem = ({
           </div>
           <div className="discount-badge-v-side badge-sm" />
         </div>
+      ) : (
+        ""
       )}
       <div className="item-tag-wrapper">
         {productQuality.displayQuality && (
@@ -178,7 +175,7 @@ const StoreItem = ({
           />
         </svg>
       </div>
-      {quantity && (
+      {quantity ? (
         <div className="quantity-badge font-white">
           <div className="display-flex flex-vertical align-center justify-center mt-2">
             <span className="font-size-14 text-weight-600 font-heebo">{quantity}</span>
@@ -186,6 +183,8 @@ const StoreItem = ({
           </div>
           <div className="quantity-badge-tip" />
         </div>
+      ) : (
+        ""
       )}
       <div className="display-flex flex-vertical align-center px-20 product-info-wrapper">
         <img alt="product-thumbnail" className="item-thumbnail" src={imageUrl} />
@@ -197,22 +196,28 @@ const StoreItem = ({
             {currencySign}
             {price}
           </span>
-          {primaryQuantityUnit.sellingUnit.name && (
+          {primaryQuantityUnit.sellingUnit.name ? (
             <span>
               &nbsp;/&nbsp;
               <span className="font-heebo text-sm text-weight-500">
                 {primaryQuantityUnit?.sellingUnit.name}
               </span>
             </span>
+          ) : (
+            ""
           )}
         </div>
-        <div className="font-darkgray text-linethrough text-weight-300 font-size-13">
-          <span className="font-heebo">
-            {currencySign}
-            {originalPrice}
-          </span>
-          /<span className="font-heebo">{primaryQuantityUnit?.sellingUnit.name}</span>
-        </div>
+        {promoted && originalPrice ? (
+          <div className="font-darkgray text-linethrough text-weight-300 font-size-13">
+            <span className="font-heebo">
+              {currencySign}
+              {originalPrice}
+            </span>
+            /<span className="font-heebo">{primaryQuantityUnit?.sellingUnit.name}</span>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
