@@ -1,29 +1,29 @@
 import "../styles/globals.css";
 import App from "next/app";
-
 import type { AppProps } from "next/app";
-import Layout from "components/Layout";
-import { TCategory, TProduct, TStoreData } from "types";
-import { formatData } from "utils";
+
+import { TCategory, TStoreData } from "types";
+
 import { createContext } from "react";
+
+import { formatData } from "utils";
+import Layout from "components/Layout";
 
 interface MyAppProps extends AppProps {
   storeData: TStoreData;
   productsData: TCategory[];
-  cartItems: TProduct[];
 }
 
 export type TDataContextProvider = {
   storeData: TStoreData;
   productsData: TCategory[];
-  cartItems: TProduct[];
 };
 
 export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
 
-function MyApp({ Component, pageProps, storeData, productsData, cartItems = [] }: MyAppProps) {
+function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
   return (
-    <DataContext.Provider value={{ storeData, productsData, cartItems }}>
+    <DataContext.Provider value={{ storeData, productsData }}>
       <Layout>
         <Component {...pageProps} />
       </Layout>

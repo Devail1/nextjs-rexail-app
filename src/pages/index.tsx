@@ -1,16 +1,17 @@
 import type { NextPage } from "next";
 import { TCategory, TProduct } from "types";
 
-import categories from "mockData.json";
 import { useContext, useEffect, useState } from "react";
+import { useCartState } from "hooks/useCartState";
 
 import Head from "next/head";
 import StoreItem from "components/StoreItem";
 import List from "components/List";
 import { DataContext } from "pages/_app";
 
-const Store: NextPage = (props: any) => {
-  const { productsData, cartItems } = useContext(DataContext);
+const Store: NextPage = () => {
+  const { cartState, onAddProduct, onClearCart } = useCartState();
+  const { productsData } = useContext(DataContext);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
@@ -20,16 +21,6 @@ const Store: NextPage = (props: any) => {
     }
   }, [productsData]);
 
-  const handleAddProduct = (product: TProduct) => {
-    if (!product.quantity || product.quantity < product.primaryQuantityUnit.maxAmount) {
-      product.quantity = product.quantity
-        ? product.quantity + product.primaryQuantityUnit.sellingUnit.amountJumps
-        : product.primaryQuantityUnit.sellingUnit.amountJumps;
-      !cartItems.includes(product) && cartItems.unshift(product);
-      // cartTotal = service.calculateTotal();
-    }
-    console.log("file: index.tsx ~ line 29 ~ cartItems", cartItems);
-  };
   return (
     <div>
       <Head>
@@ -52,7 +43,7 @@ const Store: NextPage = (props: any) => {
               </li>
             )}
           />
-          {categories.length > 10 && (
+          {productsData.length > 10 && (
             <ul className="category show-more-categories">
               <span>עוד</span>
               <ul className="categories-show-more display-flex flex-vertical absolute pt-10 rounded-10">
@@ -79,7 +70,12 @@ const Store: NextPage = (props: any) => {
               <List<TProduct>
                 items={selectedCategory?.children!}
                 renderItem={(item) => (
-                  <StoreItem key={item.id} currencySign="₪" product={item} onAddProduct={handleAddProduct} />
+                  <StoreItem
+                    key={item.id}
+                    currencySign={cartState.currencySign}
+                    product={item}
+                    onAddProduct={onAddProduct}
+                  />
                 )}
               />
             </div>
@@ -89,10 +85,15 @@ const Store: NextPage = (props: any) => {
               <div className="cart-preview-header display-flex align-center px-16">
                 <img className="w-22 h-22 ml-10" src="/icons/button-arrow-up.svg" />
                 <img className="icon-basket" src="/icons/icon-basket-green.svg" />
-                <span className="text-sm font-white mt-8 cart-preview-items-count"></span>
+                <span className="text-sm font-white mt-8 cart-preview-items-count">
+                  {cartState.cartItems.length}
+                </span>
                 <div className="display-flex flex-vertical font-white mr-8 ml-auto">
                   <span className="text-weight-300 font-size-14">סל הקניות שלי</span>
-                  <span className="font-size-18">₪0.00</span>
+                  <span className="font-size-18">
+                    {cartState.currencySign}
+                    {cartState.cartTotal}
+                  </span>
                 </div>
                 <button type="button" className="proceed-to-checkout-btn font-white font-size-16">
                   <span>
@@ -102,7 +103,11 @@ const Store: NextPage = (props: any) => {
                 </button>
               </div>
               <div className="cart-preview-subheader px-16">
-                <button type="button" className="c-p display-flex align-center h-full w-85 mr-auto">
+                <button
+                  type="button"
+                  className="c-p display-flex align-center h-full w-85 mr-auto"
+                  onClick={onClearCart}
+                >
                   <img src="/icons/icon-trash.svg" />
                   <span className="mr-5 font-size-14"> מחיקת סל </span>
                 </button>
@@ -121,7 +126,10 @@ const Store: NextPage = (props: any) => {
                   <a href="#" className="w-full h-full">
                     <div className="display-flex align-center justify-between h-full">
                       <span className="font-heebo text-weight-500 font-white checkout-text">המשך לתשלום</span>
-                      <span className="font-heebo text-weight-500 font-white total-sum">₪0.00</span>
+                      <span className="font-heebo text-weight-500 font-white total-sum">
+                        {cartState.currencySign}
+                        {cartState.cartTotal}
+                      </span>
                     </div>
                   </a>
                 </button>
