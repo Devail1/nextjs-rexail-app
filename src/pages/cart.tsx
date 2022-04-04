@@ -8,7 +8,7 @@ const Cart: NextPage = () => {
         <div className="back-btn c-p mb-5">
           <div className="display-flex align-center font-blue">
             <svg className="h-14 w-14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
             </svg>
             <span className="text-weight-500">
               <Link href="/">
@@ -23,7 +23,7 @@ const Cart: NextPage = () => {
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
         <div className="display-flex justify-between align-center mb-10">
           <div className="display-flex font-white align-center">
@@ -38,9 +38,9 @@ const Cart: NextPage = () => {
             <div className="display-flex c-p">
               <svg className="h-20 w-20 font-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                 />
               </svg>
@@ -158,7 +158,7 @@ const Cart: NextPage = () => {
 
 export default Cart;
 
-export async function getServerSideProps(context: any) {
+export async function getStaticProps(context: any) {
   return {
     props: {}, // will be passed to the page component as props
   };
