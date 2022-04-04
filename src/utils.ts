@@ -50,12 +50,3 @@ export function formatData(array: object[]): TCategory[] {
     )
   );
 }
-
-// export function calculateTotal(array: TProduct[]) {
-//   const initialValue = 0;
-//   const sumWithInitial = array.reduce(
-//     (totalSum: number, product: TProduct) => totalSum + product.price * product.quantity!,
-//     initialValue
-//   );
-//   return sumWithInitial.toFixed(2);
-// }

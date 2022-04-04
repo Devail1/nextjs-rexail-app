@@ -15,17 +15,18 @@ export function useCartState() {
   };
   const [cartState, setCartState] = useState<TCartState>(initialValue);
 
-  const onAddProduct = (product: TProduct) => {
+  const onIncreaseProductQuantity = (product: TProduct) => {
     if (!product.quantity || product.quantity < product.primaryQuantityUnit.maxAmount) {
       product.quantity = product.quantity
         ? product.quantity + product.primaryQuantityUnit.sellingUnit.amountJumps
         : product.primaryQuantityUnit.sellingUnit.amountJumps;
 
       if (!cartState.cartItems.includes(product)) {
+        let arr = [product, ...cartState.cartItems];
         setCartState({
           ...cartState,
-          cartItems: [product, ...cartState.cartItems],
-          cartTotal: calculateTotal([product, ...cartState.cartItems]),
+          cartItems: arr,
+          cartTotal: calculateTotal(arr),
         });
       } else {
         setCartState({
@@ -34,6 +35,35 @@ export function useCartState() {
         });
       }
     }
+  };
+
+  const onDecreaseProductQuantity = (product: TProduct) => {
+    if (product.quantity! > product.primaryQuantityUnit.sellingUnit.amountJumps) {
+      product.quantity = product.quantity! - product.primaryQuantityUnit.sellingUnit.amountJumps;
+      if (!cartState.cartItems.includes(product)) {
+        let arr = [product, ...cartState.cartItems];
+        setCartState({
+          ...cartState,
+          cartItems: arr,
+          cartTotal: calculateTotal(arr),
+        });
+      } else {
+        setCartState({
+          ...cartState,
+          cartTotal: calculateTotal(cartState.cartItems),
+        });
+      }
+    } else onRemoveProduct(product);
+  };
+
+  const onRemoveProduct = (product: TProduct) => {
+    product.quantity = undefined;
+    let arr = cartState.cartItems.filter((item) => item.id !== product.id);
+    setCartState({
+      ...cartState,
+      cartItems: arr,
+      cartTotal: calculateTotal(arr),
+    });
   };
 
   function onClearCart() {
@@ -47,8 +77,9 @@ export function useCartState() {
       (totalSum: number, product: TProduct) => totalSum + product.price * product.quantity!,
       initialValue
     );
+
     return sumWithInitial.toFixed(2);
   }
 
-  return { cartState, setCartState, onAddProduct, onClearCart };
+  return { cartState, setCartState, onIncreaseProductQuantity, onDecreaseProductQuantity, onClearCart };
 }

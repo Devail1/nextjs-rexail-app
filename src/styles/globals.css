@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Rubik:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&family=Rubik:wght@300;400;500;600&display=swap");
 
 /* CSS RESET */
 
@@ -248,16 +248,15 @@ body {
   background-color: #f5f3f0;
 }
 
-
 .category.show-more-categories {
   visibility: visible;
 }
 
 .categories-show-more {
-    visibility: hidden;
+  visibility: hidden;
 }
 
-.category.show-more-categories:hover > .categories-show-more{
+.category.show-more-categories:hover > .categories-show-more {
   visibility: visible;
 }
 
@@ -613,6 +612,10 @@ button:disabled {
   cursor: pointer;
   border-radius: 15px;
 }
+
+/* .toggle-unit > button {
+  height: 100%;
+} */
 
 .toggle-unit.selected {
   color: white;
@@ -1837,10 +1840,7 @@ button:disabled {
     top: -18px;
   }
 
-  .item-preview:hover
-  > .thumbnail-container
-  > .cart-preview-btn
-  > .remove-item-btn.preview-btn {
+  .item-preview:hover > .thumbnail-container > .cart-preview-btn > .remove-item-btn.preview-btn {
     visibility: visible;
   }
 

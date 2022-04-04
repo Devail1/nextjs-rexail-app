@@ -10,7 +10,7 @@ import List from "components/List";
 import { DataContext } from "pages/_app";
 
 const Store: NextPage = () => {
-  const { cartState, onAddProduct, onClearCart } = useCartState();
+  const { cartState, onIncreaseProductQuantity, onDecreaseProductQuantity, onClearCart } = useCartState();
   const { productsData } = useContext(DataContext);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
@@ -74,7 +74,8 @@ const Store: NextPage = () => {
                     key={item.id}
                     currencySign={cartState.currencySign}
                     product={item}
-                    onAddProduct={onAddProduct}
+                    onIncreaseProductQuantity={onIncreaseProductQuantity}
+                    onDecreaseProductQuantity={onDecreaseProductQuantity}
                   />
                 )}
               />

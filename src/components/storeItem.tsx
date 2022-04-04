@@ -1,12 +1,19 @@
+import { useCartState } from "hooks/useCartState";
 import { TProduct } from "types";
 
 interface Props {
   product: TProduct;
   currencySign: string;
-  onAddProduct: Function;
+  onIncreaseProductQuantity(product: TProduct): void;
+  onDecreaseProductQuantity(product: TProduct): void;
 }
 
-const StoreItem = ({ product, currencySign, onAddProduct }: Props) => {
+const StoreItem = ({
+  product,
+  currencySign,
+  onIncreaseProductQuantity,
+  onDecreaseProductQuantity,
+}: Props) => {
   let {
     fullName,
     price,
@@ -18,7 +25,10 @@ const StoreItem = ({ product, currencySign, onAddProduct }: Props) => {
     imageUrl,
     productSellingUnits,
     currentRelevancy,
+    productQuality,
   } = product;
+
+  // const { onIncreaseProductQuantity /*onUnitTypeChange*/ } = useCartState();
 
   return (
     <div className="store-item rounded-10 display-flex flex-vertical align-center justify-around">
@@ -87,11 +97,25 @@ const StoreItem = ({ product, currencySign, onAddProduct }: Props) => {
           )}
           <div className="toggle-unit-wrapper display-flex flex-vertical align-center">
             <div className="toggle-unit-container">
-              <ul className="toggle-unit display-flex justify-center align-center">
+              <ul className="display-flex justify-center align-center">
                 {productSellingUnits.map((productSellingUnit: any) => {
                   return (
-                    <li key={productSellingUnit.id}>
-                      <button type="button">{productSellingUnit.sellingUnit.name}</button>
+                    <li
+                      key={productSellingUnit.id}
+                      className={
+                        productSellingUnits.length === 1 ||
+                        productSellingUnit.sellingUnit.name === primaryQuantityUnit.sellingUnit.name
+                          ? "toggle-unit selected"
+                          : "toggle-unit "
+                      }
+                    >
+                      <button
+                        className="h-full"
+                        type="button"
+                        // onClick={onUnitTypeChange(product, productSellingUnit)}
+                      >
+                        {productSellingUnit.sellingUnit.name}
+                      </button>
                     </li>
                   );
                 })}
@@ -99,17 +123,29 @@ const StoreItem = ({ product, currencySign, onAddProduct }: Props) => {
             </div>
           </div>
           {!product.quantity ? (
-            <button type="button" className="add-to-cart-btn" onClick={() => onAddProduct(product)}>
+            <button
+              type="button"
+              className="add-to-cart-btn"
+              onClick={() => onIncreaseProductQuantity(product)}
+            >
               <img src="/icons/icon-plus.svg" />
               <span className="mr-5 text-weight-500"> הוספה לסל </span>
             </button>
           ) : (
             <div className=" add-to-cart-btn">
-              <button type="button" className="h-full w-full" onClick={() => onAddProduct(product)}>
+              <button
+                type="button"
+                className="h-full w-full"
+                onClick={() => onIncreaseProductQuantity(product)}
+              >
                 <img src="/icons/icon-plus.svg" />
               </button>
               <span className=" text-lg mx-12 text-weight-500">{quantity}</span>
-              <button type="button" className=" h-full w-full">
+              <button
+                type="button"
+                className=" h-full w-full"
+                onClick={() => onDecreaseProductQuantity(product)}
+              >
                 <img className="mb-4" src="/icons/icon-minus.svg" />
               </button>
             </div>
@@ -127,9 +163,9 @@ const StoreItem = ({ product, currencySign, onAddProduct }: Props) => {
         </div>
       )}
       <div className="item-tag-wrapper">
-        {/*<div className="item-tag rounded-10 text-weight-400">*/}
-        {/*    {productQuality.name}*/}
-        {/*</div>*/}
+        {productQuality.displayQuality && (
+          <div className="item-tag rounded-10 text-weight-400">{productQuality.name}</div>
+        )}
         <svg
           className="h-36 w-36 font-green item-card-info rotate-180"
           viewBox="0 0 20 20"
@@ -142,13 +178,15 @@ const StoreItem = ({ product, currencySign, onAddProduct }: Props) => {
           />
         </svg>
       </div>
-      <div className="quantity-badge font-white">
-        <div className="display-flex flex-vertical align-center justify-center mt-2">
-          <span className="font-size-14 text-weight-600 font-heebo">{quantity}</span>
-          <span className="font-size-10 text-weight-400">{primaryQuantityUnit?.sellingUnit.name}</span>
+      {quantity && (
+        <div className="quantity-badge font-white">
+          <div className="display-flex flex-vertical align-center justify-center mt-2">
+            <span className="font-size-14 text-weight-600 font-heebo">{quantity}</span>
+            <span className="font-size-10 text-weight-400">{primaryQuantityUnit?.sellingUnit.name}</span>
+          </div>
+          <div className="quantity-badge-tip" />
         </div>
-        <div className="quantity-badge-tip" />
-      </div>
+      )}
       <div className="display-flex flex-vertical align-center px-20 product-info-wrapper">
         <img alt="product-thumbnail" className="item-thumbnail" src={imageUrl} />
         <span className="font-size-16 text-center mt-5">{name}</span>
@@ -159,12 +197,14 @@ const StoreItem = ({ product, currencySign, onAddProduct }: Props) => {
             {currencySign}
             {price}
           </span>
-          <span>
-            &nbsp;/&nbsp;
-            <span className="font-heebo text-sm text-weight-500">
-              {primaryQuantityUnit?.sellingUnit.name}
+          {primaryQuantityUnit.sellingUnit.name && (
+            <span>
+              &nbsp;/&nbsp;
+              <span className="font-heebo text-sm text-weight-500">
+                {primaryQuantityUnit?.sellingUnit.name}
+              </span>
             </span>
-          </span>
+          )}
         </div>
         <div className="font-darkgray text-linethrough text-weight-300 font-size-13">
           <span className="font-heebo">
