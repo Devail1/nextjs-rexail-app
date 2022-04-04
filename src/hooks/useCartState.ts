@@ -67,8 +67,6 @@ export function useCartState() {
   };
 
   const onUnitTypeChange = (product: TProduct, newQuantityUnit: Unit) => {
-    console.log("here");
-
     // Check the new unit weight and modify the price accordingly, if the new unit weight is higher, than multiply the price by it,
     // else, divide the price by the previous unit weight value, do the same for old price.
     if (product.primaryQuantityUnit.estimatedUnitWeight! < newQuantityUnit.estimatedUnitWeight!) {
