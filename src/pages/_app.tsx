@@ -32,12 +32,9 @@ function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
 }
 
 MyApp.getInitialProps = async (appContext: any) => {
-  const { req } = appContext;
-
   // calls page's `getInitialProps` and fills `appProps.pageProps`
   const appProps = await App.getInitialProps(appContext);
 
-  // if (req) {
   // Call an external API endpoint to get store data.
   const res1 = await fetch(
     "https://test.rexail.co.il/client/public/store/website?domain=testeitan.rexail.co.il"
@@ -55,10 +52,6 @@ MyApp.getInitialProps = async (appContext: any) => {
   let appData = { storeData, productsData };
 
   return { ...appProps, ...appData };
-  // }
-  // else {
-  // return { ...appProps };
-  // }
 };
 
 export default MyApp;

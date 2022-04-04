@@ -158,7 +158,7 @@ const Cart: NextPage = () => {
 
 export default Cart;
 
-export async function getStaticProps(context: any) {
+export async function getServerSideProps(context: any) {
   return {
     props: {}, // will be passed to the page component as props
   };
