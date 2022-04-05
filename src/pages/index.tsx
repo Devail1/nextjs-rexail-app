@@ -111,9 +111,13 @@ const Store: NextPage<Props> = ({ cartState, cartActions }) => {
                   disabled={!cartState.cartItems.length}
                 >
                   <span>
-                    <Link href={!cartState.cartItems.length ? "#" : "/cart"}>
+                    {!cartState.cartItems.length ? (
                       <a>המשך לתשלום</a>
-                    </Link>
+                    ) : (
+                      <Link href="/cart">
+                        <a>המשך לתשלום</a>
+                      </Link>
+                    )}
                   </span>
                 </button>
               </div>
@@ -152,7 +156,7 @@ const Store: NextPage<Props> = ({ cartState, cartActions }) => {
               </div>
               <div className="cart-preview-footer px-28 display-flex flex-vertical align-center justify-center">
                 <button type="button" className="btn-green w-full" disabled={!cartState.cartItems.length}>
-                  <Link href={!cartState.cartItems.length ? "#" : "/cart"}>
+                  {!cartState.cartItems.length ? (
                     <a className="w-full h-full">
                       <div className="display-flex align-center justify-between h-full">
                         <span className="font-heebo text-weight-500 font-white checkout-text">
@@ -164,7 +168,21 @@ const Store: NextPage<Props> = ({ cartState, cartActions }) => {
                         </span>
                       </div>
                     </a>
-                  </Link>
+                  ) : (
+                    <Link href="/cart">
+                      <a className="w-full h-full">
+                        <div className="display-flex align-center justify-between h-full">
+                          <span className="font-heebo text-weight-500 font-white checkout-text">
+                            המשך לתשלום
+                          </span>
+                          <span className="font-heebo text-weight-500 font-white total-sum">
+                            {cartState.currencySign}
+                            {cartState.cartTotal}
+                          </span>
+                        </div>
+                      </a>
+                    </Link>
+                  )}
                 </button>
                 <span className="font-darkgray font-size-14 mt-5">שערוך. עלות סופית לפני שקילה.</span>
               </div>

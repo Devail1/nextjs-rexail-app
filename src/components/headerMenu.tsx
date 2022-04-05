@@ -79,7 +79,7 @@ const HeaderMenu = () => {
       <div className="navbar-minimized">
         <div className="container mx-auto h-full display-flex align-center justify-between px-5">
           <div className="display-flex align-center">
-            <a href="#">
+            <a>
               <img className="logo-img round w-60 h-60" src="/images/logo.png" alt="logo" />
             </a>
             <div className="text-title mb-5 mr-10">{storeData?.name}</div>

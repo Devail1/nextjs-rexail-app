@@ -124,9 +124,13 @@ const Cart: NextPage<Props> = ({ cartState, cartActions }) => {
                   disabled={!cartState.cartItems.length || userComment.length < 3}
                 >
                   <span className="mobile-hide font-white font-size-18 text-weight-500 mx-auto my-auto">
-                    <Link href={!cartState.cartItems.length || userComment.length < 3 ? "#" : "/checkout"}>
+                    {!cartState.cartItems.length || userComment.length < 3 ? (
                       <a>המשך לתשלום</a>
-                    </Link>
+                    ) : (
+                      <Link href="/checkout">
+                        <a>המשך לתשלום</a>
+                      </Link>
+                    )}
                   </span>
                 </button>
                 <span className="mobile-hide font-darkgray mt-10 font-size-14">
