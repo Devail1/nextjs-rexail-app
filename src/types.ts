@@ -65,6 +65,7 @@ export interface TProduct {
   primaryQuantityUnit: Unit;
   productSellingUnits: Unit[];
   commentType: CommentType | null;
+  comment?: Comment;
   $$hashKey?: string;
 }
 

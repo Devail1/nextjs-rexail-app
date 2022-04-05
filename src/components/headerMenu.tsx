@@ -1,6 +1,7 @@
 import { DataContext } from "pages/_app";
 import { useContext } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const HeaderMenu = () => {
   const { storeData } = useContext(DataContext);
@@ -109,10 +110,12 @@ const HeaderMenu = () => {
           </div>
           {router.pathname === "/checkout" ? (
             <div className="c-p">
-              <a className="display-flex align-center" href="/cart">
-                <span className="ml-5">חזרה לסל הקניות</span>
-                <img src="/icons/icon-arrow-left.svg" />
-              </a>
+              <Link href="/cart">
+                <a className="display-flex align-center">
+                  <span className="ml-5">חזרה לסל הקניות</span>
+                  <img src="/icons/icon-arrow-left.svg" />
+                </a>
+              </Link>
             </div>
           ) : (
             ""

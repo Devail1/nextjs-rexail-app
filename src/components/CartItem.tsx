@@ -1,4 +1,5 @@
 import { TCartActions } from "hooks/useCartState";
+import { useState } from "react";
 import { TProduct } from "types";
 
 type Props = {
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export default function CartItem({ product, cartItemsLength, index, cartActions, currencySign }: Props) {
+  const [isUnitTypeDropdownToggled, setIsUnitTypeDropdownToggled] = useState(false);
   return (
     <div
       id={product.id.toString()}
@@ -49,9 +51,9 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
             fill="currentColor"
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
+              clipRule="evenodd"
             />
           </svg>
         </button>
@@ -74,20 +76,20 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M19 9l-7 7-7-7" />
             </svg>
           </div>
         </div>
         {product.commentType ? (
           <form ng-model="productForm" name="productForm" className="select-form">
-            <label
-              // for="productCommentSelect"
-              className="display-flex relative w-full"
-            >
+            <label className="display-flex relative w-full">
               <svg
-                ng-className="{'font-green': productForm.$valid, 'font-red': productForm.$invalid || productForm.$invalid && cartCommentState }"
+                className={
+                  product.comment
+                    ? "font-green h-16 w-16 absolute knife-icon "
+                    : "font-red h-16 w-16 absolute knife-icon "
+                }
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-16 w-16 absolute knife-icon"
                 viewBox="0 0 512.000000 512.000000"
                 preserveAspectRatio="xMidYMid meet"
               >
@@ -100,21 +102,32 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
                   <path d="M1297 1502 l-1299 -1299 29 -11 c99 -41 331 -54 507 -27 636 96 1423 550 2296 1324 130 115 560 522 560 530 0 10 -774 781 -785 781 -6 0 -594 -584 -1308 -1298z" />
                 </g>
               </svg>
-              {/* <select
-              ng-model="product.comment"
-              ng-options="option.name for option in product.commentType.comments"
-              ng-className="{'border-green': productForm.$valid, 'border-red': productForm.$invalid || productForm.$invalid && cartCommentState }"
-              className="select-unit c-p mt-10 rounded-25 w-full display-flex align-center justify-between"
-              id="productCommentSelect"
-              name="productCommentSelect"
-              ng-required="true"
-            >
-              <option value="">{product?.commentType?.name}</option>
-            </select> */}
+              <select
+                /* TODO - Create onProductCommentSelect action in cart actions */
+                onChange={(e) => {
+                  product.comment = product.commentType?.comments.find(
+                    (comment) => comment.id === e.target.value
+                  );
+                }}
+                className={
+                  product.comment
+                    ? "border-green select-unit c-p mt-10 rounded-25 w-full display-flex align-center justify-between"
+                    : "border-red select-unit c-p mt-10 rounded-25 w-full display-flex align-center justify-between"
+                }
+              >
+                <option value="">{product.commentType.name}</option>
+
+                {product.commentType.comments.map((comment) => {
+                  return (
+                    <option key={comment.id} value={comment.id}>
+                      {comment.name}
+                    </option>
+                  );
+                })}
+              </select>
               <svg
-                ng-className="{'font-green': productForm.$valid, 'font-red': productForm.$invalid || productForm.$invalid && cartCommentState }"
+                className={product.comment ? "font-green select-arrow" : "font-red select-arrow"}
                 width="11"
-                className="select-arrow"
                 height="11"
                 viewBox="0 0 11 11"
                 fill="currentColor"
@@ -123,16 +136,15 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
                 <path
                   d="M5.5 6.746 1.341 2.587a.786.786 0 0 0-1.11 1.111l4.713 4.715a.786.786 0 0 0 1.112 0l4.714-4.715a.786.786 0 0 0-1.111-1.11L5.5 6.745z"
                   fill="currentColor"
-                  fill-rule="evenodd"
+                  fillRule="evenodd"
                 />
               </svg>
             </label>
-            <div
-              // ng-if="productForm.productCommentSelect.$touched && productForm.$invalid || productForm.$invalid && cartCommentState"
-              className="mt-5 font-red text-md select-warning"
-            >
-              יש לבחור אפשרות אחת
-            </div>
+            {product.commentType && !product.comment ? (
+              <div className="mt-5 font-red text-md select-warning">יש לבחור אפשרות אחת</div>
+            ) : (
+              ""
+            )}
           </form>
         ) : (
           ""
@@ -168,7 +180,44 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
         </button>
         <div className="display-flex flex-vertical">
           <div className="mx-auto mobile-hide text-weight-500 item-quantity">{product.quantity}</div>
-          {product.primaryQuantityUnit.sellingUnit.name ? (
+          {product.primaryQuantityUnit.sellingUnit.name && (
+            <button
+              type="button"
+              className={product.productSellingUnits.length === 1 ? "not-active relative" : "relative"}
+              onClick={() => setIsUnitTypeDropdownToggled(!isUnitTypeDropdownToggled)}
+            >
+              <span
+                className={
+                  product.productSellingUnits.length === 1
+                    ? "font-size-13 font-gray-600 unit-label c-p dropdown-disabled"
+                    : product.productSellingUnits.length > 1
+                    ? "font-size-13 font-gray-600 unit-label c-p dropdown-enabled mr-10"
+                    : "font-size-13 font-gray-600 unit-label c-p"
+                }
+              >
+                {product.primaryQuantityUnit.sellingUnit.name}
+                {product.productSellingUnits.length > 1 && (
+                  <img src="/icons/icon-arrow-down.svg" className="h-7 w-7 font-green mr-2 dropdown-arrow" />
+                )}
+              </span>
+              {isUnitTypeDropdownToggled && (
+                <ul className="dropdown-menu-sm display-flex flex-vertical align-center absolute">
+                  {product.productSellingUnits.map((productSellingUnit) => {
+                    return (
+                      <li
+                        key={productSellingUnit.id}
+                        onClick={() => cartActions.onUnitTypeChange(product, productSellingUnit)}
+                        className="dropdown-item"
+                      >
+                        <a>{productSellingUnit.sellingUnit.name} </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </button>
+          )}
+          {/* {product.primaryQuantityUnit.sellingUnit.name ? ( 
             <a
               ng-click="ctrl.state.isUnitTypeDropdownToggled = !ctrl.state.isUnitTypeDropdownToggled"
               className="relative"
@@ -191,18 +240,18 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
                 // ng-if="ctrl.state.isUnitTypeDropdownToggled"
                 className="dropdown-menu-sm display-flex flex-vertical align-center absolute"
               >
-                {/* <li
+                 <li
                 ng-repeat="productSellingUnit in product.productSellingUnits"
                 ng-click="ctrl.onUnitTypeChange(product, productSellingUnit)"
                 className="dropdown-item"
               >
                 <button type="button"> {productSellingUnit.sellingUnit.name} </button>
-              </li> */}
+              </li> 
               </ul>
             </a>
           ) : (
             ""
-          )}
+          )}*/}
         </div>
         <button type="button" className="plus-minus-preview-container" ng-click="onDecreaseProductQuantity()">
           <img className="h-8 w-8 absolute" src="/icons/icon-minus.svg" />
