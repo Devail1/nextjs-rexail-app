@@ -103,12 +103,7 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
                 </g>
               </svg>
               <select
-                /* TODO - Create onProductCommentSelect action in cart actions */
-                onChange={(e) => {
-                  product.comment = product.commentType?.comments.find(
-                    (comment) => comment.id === e.target.value
-                  );
-                }}
+                onChange={(e) => cartActions.onProductCommentSelect(product, e.target.value)}
                 className={
                   product.comment
                     ? "border-green select-unit c-p mt-10 rounded-25 w-full display-flex align-center justify-between"
@@ -116,7 +111,6 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
                 }
               >
                 <option value="">{product.commentType.name}</option>
-
                 {product.commentType.comments.map((comment) => {
                   return (
                     <option key={comment.id} value={comment.id}>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TProduct, Unit } from "types";
+import { Comment, TProduct, Unit } from "types";
 
 export type TCartState = {
   cartItems: TProduct[];
@@ -11,6 +11,7 @@ export type TCartActions = {
   onIncreaseProductQuantity(product: TProduct): void;
   onDecreaseProductQuantity(product: TProduct): void;
   onRemoveProduct(product: TProduct): void;
+  onProductCommentSelect(product: TProduct, commentValue: string): void;
   onUnitTypeChange(product: TProduct, newQuantityUnit: Unit): void;
   onClearCart(): void;
 };
@@ -23,7 +24,6 @@ export function useCartState() {
   };
 
   const [cartState, setCartState] = useState<TCartState>(initialValue);
-  // console.log("file: useCartState.ts ~ line 17 ~ useCartState ~ cartState", cartState);
 
   const onIncreaseProductQuantity = (product: TProduct) => {
     if (!product.quantity || product.quantity < product.primaryQuantityUnit.maxAmount) {
@@ -76,6 +76,12 @@ export function useCartState() {
     });
   };
 
+  const onProductCommentSelect = (product: TProduct, commentValue: string) => {
+    product.comment = product.commentType?.comments.find((comment) => comment.id === commentValue);
+
+    updateCart();
+  };
+
   const onUnitTypeChange = (product: TProduct, newQuantityUnit: Unit) => {
     // Check the new unit weight and modify the price accordingly, if the new unit weight is higher, than multiply the price by it,
     // else, divide the price by the previous unit weight value, do the same for old price.
@@ -109,12 +115,7 @@ export function useCartState() {
       product.quantity = product.primaryQuantityUnit.maxAmount;
     }
 
-    let arr = cartState.cartItems;
-    setCartState({
-      ...cartState,
-      cartItems: arr,
-      cartTotal: calculateTotal(arr),
-    });
+    updateCart();
   };
 
   function onClearCart() {
@@ -132,6 +133,11 @@ export function useCartState() {
     return sumWithInitial.toFixed(2);
   }
 
+  // Calling setState in order to re-render relevant component(s)
+  function updateCart() {
+    setCartState({ ...cartState });
+  }
+
   return {
     cartState,
     cartActions: {
@@ -139,6 +145,7 @@ export function useCartState() {
       onDecreaseProductQuantity,
       onClearCart,
       onRemoveProduct,
+      onProductCommentSelect,
       onUnitTypeChange,
     },
   };
