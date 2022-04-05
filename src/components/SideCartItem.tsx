@@ -1,15 +1,11 @@
+import { TCartActions } from "hooks/useCartState";
 import { useState } from "react";
-import { TProduct, Unit } from "types";
+import { TProduct } from "types";
 
 interface Props {
   product: TProduct;
   currencySign: string;
-  cartActions: {
-    onIncreaseProductQuantity(product: TProduct): void;
-    onDecreaseProductQuantity(product: TProduct): void;
-    onRemoveProduct(product: TProduct): void;
-    onUnitTypeChange(product: TProduct, newQuantityUnit: Unit): void;
-  };
+  cartActions: TCartActions;
 }
 
 const SideCartItem = ({ product, currencySign, cartActions }: Props) => {

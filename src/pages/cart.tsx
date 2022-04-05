@@ -1,8 +1,8 @@
 import CartItem from "components/CartItem";
-import { TCartActions, TCartState, useCartState } from "hooks/useCartState";
+import { TCartActions, TCartState } from "hooks/useCartState";
 import { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
-import { ReactEventHandler, useState } from "react";
+import { useState } from "react";
 
 type Props = {
   cartState: TCartState;

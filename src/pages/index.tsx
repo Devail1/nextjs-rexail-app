@@ -109,10 +109,11 @@ const Store: NextPage<Props> = ({ cartState, cartActions }) => {
                   type="button"
                   className="proceed-to-checkout-btn font-white font-size-16"
                   disabled={!cartState.cartItems.length}
-                  onClick={() => router.push("/cart", undefined, { shallow: true })}
                 >
                   <span>
-                    <a>המשך לתשלום</a>
+                    <Link href={!cartState.cartItems.length ? "#" : "/cart"}>
+                      <a>המשך לתשלום</a>
+                    </Link>
                   </span>
                 </button>
               </div>
@@ -151,7 +152,7 @@ const Store: NextPage<Props> = ({ cartState, cartActions }) => {
               </div>
               <div className="cart-preview-footer px-28 display-flex flex-vertical align-center justify-center">
                 <button type="button" className="btn-green w-full" disabled={!cartState.cartItems.length}>
-                  <Link href={!cartState.cartItems.length ? "#" : "/cart"} shallow={true}>
+                  <Link href={!cartState.cartItems.length ? "#" : "/cart"}>
                     <a className="w-full h-full">
                       <div className="display-flex align-center justify-between h-full">
                         <span className="font-heebo text-weight-500 font-white checkout-text">

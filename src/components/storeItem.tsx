@@ -1,13 +1,10 @@
+import { TCartActions } from "hooks/useCartState";
 import { TProduct, Unit } from "types";
 
 interface Props {
   product: TProduct;
   currencySign: string;
-  cartActions: {
-    onIncreaseProductQuantity(product: TProduct): void;
-    onDecreaseProductQuantity(product: TProduct): void;
-    onUnitTypeChange(product: TProduct, newQuantityUnit: Unit): void;
-  };
+  cartActions: TCartActions;
 }
 
 const StoreItem = ({ product, currencySign, cartActions }: Props) => {
