@@ -5,8 +5,9 @@ import type { AppProps } from "next/app";
 import { TCategory, TStoreData } from "types";
 
 import { createContext } from "react";
-
+import { useCartState } from "hooks/useCartState";
 import { formatData } from "utils";
+
 import Layout from "components/Layout";
 
 interface MyAppProps extends AppProps {
@@ -22,10 +23,12 @@ export type TDataContextProvider = {
 export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
 
 function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
+  const cartState = useCartState();
+
   return (
     <DataContext.Provider value={{ storeData, productsData }}>
       <Layout>
-        <Component {...pageProps} />
+        <Component {...pageProps} {...cartState} />
       </Layout>
     </DataContext.Provider>
   );

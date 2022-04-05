@@ -1,7 +1,21 @@
-import { NextPage } from "next";
+import CartItem from "components/CartItem";
+import { TCartActions, TCartState, useCartState } from "hooks/useCartState";
+import { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
+import { ReactEventHandler, useState } from "react";
 
-const Cart: NextPage = () => {
+type Props = {
+  cartState: TCartState;
+  cartActions: TCartActions;
+};
+
+const Cart: NextPage<Props> = ({ cartState, cartActions }) => {
+  const [userComment, setUserComment] = useState("");
+
+  const handleUserComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setUserComment(e.target.value);
+  };
+
   return (
     <div className="cart-bg">
       <div className="container mx-auto px-28 pt-20">
@@ -27,25 +41,9 @@ const Cart: NextPage = () => {
         </svg>
         <div className="display-flex justify-between align-center mb-10">
           <div className="display-flex font-white align-center">
-            <span className="items-count">{/* {globalState.cartItems.length} */}</span>
-            <img ng-src="assets/icons/icon-basket-white.svg" />
+            <span className="items-count">{cartState.cartItems.length}</span>
+            <img src="/icons/icon-basket-white.svg" />
             <div className="text-title font-blue mr-5 mt-15 mb-5">סל הקניות שלי</div>
-          </div>
-          <div
-            // ng-click="ctrl.state.cartActions.onClearCart()"
-            className="clear-cart"
-          >
-            <div className="display-flex c-p">
-              <svg className="h-20 w-20 font-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                />
-              </svg>
-              <span className="mr-2 font-bold font-blue c-p"> מחיקת סל </span>
-            </div>
           </div>
         </div>
         <div id="cart-wrapper">
@@ -66,25 +64,28 @@ const Cart: NextPage = () => {
               </div>
             </div>
             <ul id="cart-items-container">
-              {/* <cart-item
-                ng-repeat="product in globalState.cartItems"
-                ng-className="{'border-none':$last}"
-                product="product"
-                ng-model="cartItem"
-                on-remove-product="ctrl.state.cartActions.onRemoveProduct(product)"
-                on-increase-product-quantity="ctrl.state.cartActions.onIncreaseProductQuantity(product)"
-                on-decrease-product-quantity="ctrl.state.cartActions.onDecreaseProductQuantity(product)"
-                cart-comment-state="ctrl.state.formControl.userComment"
-              ></cart-item> */}
-              {/* {!cartState.cartItems.length ? ( */}
-              <div className="display-flex flex-vertical align-center py-20 ">
-                <img src="/images/empty-basket.png" />
-                <span className="mt-10 font-size-22 font-blue text-weight-700 font-heebo">
-                  סל הקניות שלכם ריק
-                </span>
-                <span className="font-blue font-size-18 mt-5">חזרו לחנות כדי להוסיף מוצרים</span>
-              </div>
-              {/* )}  */}
+              {!cartState.cartItems.length ? (
+                <div className="display-flex flex-vertical align-center py-20 ">
+                  <img src="/images/empty-basket.png" />
+                  <span className="mt-10 font-size-22 font-blue text-weight-700 font-heebo">
+                    סל הקניות שלכם ריק
+                  </span>
+                  <span className="font-blue font-size-18 mt-5">חזרו לחנות כדי להוסיף מוצרים</span>
+                </div>
+              ) : (
+                cartState.cartItems.map((item, idx) => {
+                  return (
+                    <CartItem
+                      key={item.id}
+                      index={idx}
+                      cartItemsLength={cartState.cartItems.length - 1}
+                      currencySign={cartState.currencySign}
+                      product={item}
+                      cartActions={cartActions}
+                    />
+                  );
+                })
+              )}
             </ul>
           </div>
           <div className="display-flex flex-vertical">
@@ -101,36 +102,31 @@ const Cart: NextPage = () => {
               <textarea
                 id="textarea"
                 name="textarea"
-                ng-required="true"
-                ng-minlength="3"
+                onChange={handleUserComment}
                 className="order-comment rounded-10 font-size-16"
               ></textarea>
-              <div
-                ng-if="cartForm.textarea.$touched && cartForm.textarea.$invalid"
-                className="text-center mt-2 font-red"
-              >
-                נא מלאו הערות למכין ההזמנה
-              </div>
+              {userComment.length < 3 ? (
+                <div className="text-center mt-2 font-red">נא מלאו הערות למכין ההזמנה</div>
+              ) : (
+                ""
+              )}
               <div className="mobile-hide mt-30 border-bottom-gray-1px mb-20"></div>
               <div className="display-flex justify-between">
                 <span className="mobile-hide font-gray-900">סה"כ סל קניות </span>
                 <span className="mobile-hide item-price font-size-16">
-                  {/* {ctrl.state.currencySign} */}
-                  {/* {globalState.cartTotal} */}
+                  {cartState.currencySign}
+                  {cartState.cartTotal}
                 </span>
               </div>
               <div className="display-flex flex-vertical align-center mt-20">
                 <button
-                  type="submit"
                   className="mobile-hide h-45 btn-green rounded-10 border-light-gray"
-                  ng-disabled="!globalState.cartItems.length || cartForm.$invalid || !productForm.$valid()"
+                  disabled={!cartState.cartItems.length || userComment.length < 3}
                 >
                   <span className="mobile-hide font-white font-size-18 text-weight-500 mx-auto my-auto">
-                    <a
-                    // ng-href="{!globalState.cartItems.length || cartForm.$invalid || !productForm.$valid() ? '#' : '/checkout' }"
-                    >
-                      המשך לתשלום
-                    </a>
+                    <Link href={!cartState.cartItems.length || userComment.length < 3 ? "#" : "/checkout"}>
+                      <a>המשך לתשלום</a>
+                    </Link>
                   </span>
                 </button>
                 <span className="mobile-hide font-darkgray mt-10 font-size-14">
@@ -146,8 +142,8 @@ const Cart: NextPage = () => {
         <button type="button" id="submit-cart-btn" className="btn-green rounded-50 w-full mb-15">
           <span className="font-white text-xl checkout-text">המשך לתשלום</span>
           <span className="font-white text-xl total-sum">
-            {/* {ctrl.state.currencySign} */}
-            {/* {globalState.cartTotal} */}
+            {cartState.currencySign}
+            {cartState.cartTotal}
           </span>
         </button>
         <span className="font-darkgray text-lgr"> שערוך. עלות סופית לפני שקילה. </span>
@@ -158,8 +154,8 @@ const Cart: NextPage = () => {
 
 export default Cart;
 
-export async function getServerSideProps(context: any) {
+export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {}, // will be passed to the page component as props
   };
-}
+};

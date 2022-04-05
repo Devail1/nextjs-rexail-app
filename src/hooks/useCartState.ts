@@ -1,10 +1,18 @@
 import { useState } from "react";
 import { TProduct, Unit } from "types";
 
-type TCartState = {
+export type TCartState = {
   cartItems: TProduct[];
   cartTotal: string;
   currencySign: string;
+};
+
+export type TCartActions = {
+  onIncreaseProductQuantity(product: TProduct): void;
+  onDecreaseProductQuantity(product: TProduct): void;
+  onRemoveProduct(product: TProduct): void;
+  onUnitTypeChange(product: TProduct, newQuantityUnit: Unit): void;
+  onClearCart(): void;
 };
 
 export function useCartState() {
@@ -13,7 +21,9 @@ export function useCartState() {
     cartTotal: "0.00",
     currencySign: "₪",
   };
+
   const [cartState, setCartState] = useState<TCartState>(initialValue);
+  // console.log("file: useCartState.ts ~ line 17 ~ useCartState ~ cartState", cartState);
 
   const onIncreaseProductQuantity = (product: TProduct) => {
     if (!product.quantity || product.quantity < product.primaryQuantityUnit.maxAmount) {

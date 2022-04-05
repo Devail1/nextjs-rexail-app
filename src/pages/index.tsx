@@ -1,19 +1,24 @@
-import type { NextPage } from "next";
+import type { GetStaticProps, NextPage } from "next";
+import { useRouter } from "next/router";
 import { TCategory, TProduct } from "types";
 
 import { useContext, useEffect, useState } from "react";
-import { useCartState } from "hooks/useCartState";
+import { TCartActions, TCartState } from "hooks/useCartState";
+import { DataContext } from "pages/_app";
 
 import Head from "next/head";
+import Link from "next/link";
 import StoreItem from "components/StoreItem";
 import List from "components/List";
-import { DataContext } from "pages/_app";
 import SideCartItem from "components/SideCartItem";
-import Link from "next/link";
-import { useRouter } from "next/router";
-const Store: NextPage = () => {
+
+type Props = {
+  cartState: TCartState;
+  cartActions: TCartActions;
+};
+
+const Store: NextPage<Props> = ({ cartState, cartActions }) => {
   const router = useRouter();
-  const { cartState, cartActions } = useCartState();
   const { productsData } = useContext(DataContext);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
@@ -172,8 +177,8 @@ const Store: NextPage = () => {
 
 export default Store;
 
-export async function getServerSideProps(context: any) {
+export const getStaticProps: GetStaticProps = async (context) => {
   return {
     props: {}, // will be passed to the page component as props
   };
-}
+};
