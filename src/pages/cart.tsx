@@ -92,7 +92,7 @@ const Cart: NextPage<Props> = ({ cartState, cartActions }) => {
             <span className="text-title font-gray-600 text-xl mb-20 mobile-show mt-20">
               הערות למכין ההזמנה
             </span>
-            <form name="cartForm" className="order-summary rounded-10">
+            <div className="order-summary rounded-10">
               <span className="font-heebo text-lgr text-weight-700 font-blue mobile-hide py-5 my-5 border-bottom-gray-2px">
                 סיכום הזמנה
               </span>
@@ -121,7 +121,9 @@ const Cart: NextPage<Props> = ({ cartState, cartActions }) => {
               <div className="display-flex flex-vertical align-center mt-20">
                 <button
                   className="mobile-hide h-45 btn-green rounded-10 border-light-gray"
-                  disabled={!cartState.cartItems.length || userComment.length < 3}
+                  disabled={
+                    !cartState.cartItems.length || userComment.length < 3 || cartActions.onCartSubmit()
+                  }
                 >
                   <span className="mobile-hide font-white font-size-18 text-weight-500 mx-auto my-auto">
                     {!cartState.cartItems.length || userComment.length < 3 ? (
@@ -137,7 +139,7 @@ const Cart: NextPage<Props> = ({ cartState, cartActions }) => {
                   שערוך. עלות סופית לפני שקילה.
                 </span>
               </div>
-            </form>
+            </div>
           </div>
         </div>
         <div id="featured-items-wrapper" className="display-flex flex-vertical mt-30"></div>

@@ -14,6 +14,7 @@ export type TCartActions = {
   onProductCommentSelect(product: TProduct, commentValue: string): void;
   onUnitTypeChange(product: TProduct, newQuantityUnit: Unit): void;
   onClearCart(): void;
+  onCartSubmit(): boolean;
 };
 
 export function useCartState() {
@@ -106,12 +107,19 @@ export function useCartState() {
     updateCart();
   };
 
-  function onClearCart() {
+  const onClearCart = () => {
     cartState.cartItems.forEach((item) => (item.quantity = undefined));
     setCartState(initialValue);
-  }
+  };
 
-  function calculateTotal(array?: TProduct[]) {
+  const onCartSubmit = () => {
+    return (
+      cartState.cartItems.filter((product) => product.commentType).length !==
+      cartState.cartItems.filter((product) => product.commentType && product.comment).length
+    );
+  };
+
+  const calculateTotal = (array?: TProduct[]) => {
     let arr = array?.length ? array : [...cartState.cartItems];
     const initialValue = 0;
     const sumWithInitial = arr.reduce(
@@ -120,12 +128,12 @@ export function useCartState() {
     );
     if (isNaN(sumWithInitial)) return "0.00";
     return sumWithInitial.toFixed(2);
-  }
+  };
 
   // Calling setState in order to re-render relevant component(s)
-  function updateCart() {
+  const updateCart = () => {
     setCartState({ ...cartState, cartTotal: calculateTotal() });
-  }
+  };
 
   return {
     cartState,
@@ -136,6 +144,7 @@ export function useCartState() {
       onRemoveProduct,
       onProductCommentSelect,
       onUnitTypeChange,
+      onCartSubmit,
     },
   };
 }
