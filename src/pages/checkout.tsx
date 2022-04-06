@@ -1,3 +1,4 @@
+import CheckoutForm from "components/CheckoutForm";
 import { TCartState } from "hooks/useCartState";
 import { GetStaticProps, NextPage } from "next";
 
@@ -62,11 +63,15 @@ const Checkout: NextPage<Props> = ({ cartState }) => {
                   <span>ללא תשלום</span>
                 </button>
               </div>
-              <form name="form" className="checkout-form-wrapper mb-20">
+              <CheckoutForm
+                currencySign={cartState.currencySign}
+                cartTotal={cartState.cartTotal}
+              ></CheckoutForm>
+              {/* <form name="form" className="checkout-form-wrapper mb-20">
                 <div className="font-size-16 font-gray-900 text-weight-500">פרטי כרטיס אשראי</div>
                 <div className="display-flex align-center justify-between mb-20">
                   <div className="display-flex flex-vertical w-2-4">
-                    <label /*for="cardHolderName"*/>
+                    <label for="cardHolderName">
                       <span>שם בעל הכרטיס *</span>
                     </label>
                     <input
@@ -81,7 +86,7 @@ const Checkout: NextPage<Props> = ({ cartState }) => {
                     />
                   </div>
                   <div className="display-flex flex-vertical w-2-4">
-                    <label /*for="cardHolderID"*/>
+                    <label for="cardHolderID">
                       <span>ת.ז. בעל הכרטיס *</span>
                     </label>
                     <input
@@ -98,7 +103,7 @@ const Checkout: NextPage<Props> = ({ cartState }) => {
                 </div>
                 <div className="display-flex align-center justify-between mb-20">
                   <div className="display-flex flex-vertical justify-between w-2-4">
-                    <label /*for="cardNumber"*/>
+                    <label for="cardNumber">
                       <span>מספר כרטיס אשראי *</span>
                     </label>
                     <input
@@ -119,7 +124,6 @@ const Checkout: NextPage<Props> = ({ cartState }) => {
                       </label>
                       <input
                         className="checkout-form-input"
-                        // id="exp"
                         type="text"
                         placeholder="MM/YY"
                         id="cardExpDate"
@@ -132,7 +136,7 @@ const Checkout: NextPage<Props> = ({ cartState }) => {
                       />
                     </div>
                     <div className="display-flex flex-vertical w-2-4 relative">
-                      <label /*for="cardCVV"*/>
+                      <label for="cardCVV">
                         <span>CVV *</span>
                       </label>
                       <input
@@ -189,7 +193,7 @@ const Checkout: NextPage<Props> = ({ cartState }) => {
                     {parseFloat(cartState.cartTotal) + 30}
                   </button>
                 </div>
-              </form>
+              </form> */}
             </div>
           </div>
           <div className="order-summary rounded-10">
