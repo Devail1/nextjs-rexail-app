@@ -10,7 +10,7 @@ type Props = {
   cartItemsLength: number;
 };
 
-export default function CartItem({ product, cartItemsLength, index, cartActions, currencySign }: Props) {
+const CartItem = ({ product, cartItemsLength, index, cartActions, currencySign }: Props) => {
   const [isUnitTypeDropdownToggled, setIsUnitTypeDropdownToggled] = useState(false);
   return (
     <div
@@ -43,7 +43,7 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
           {currencySign} . בתוקף עד ה04.01.22
           <div className="tooltip-right-arrow"></div>
         </div>
-        <button type="button" ng-click="onRemoveProduct()">
+        <button type="button" onClick={() => cartActions.onRemoveProduct(product)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-36 w-36 font-red absolute c-p remove-item-btn mt-5"
@@ -169,7 +169,11 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
         )}
       </div>
       <div className="label-wrapper mobile-hide flex-horizontal justify-center item-quantity-container mt-15">
-        <button type="button" className="plus-minus-preview-container" ng-click="onIncreaseProductQuantity()">
+        <button
+          type="button"
+          className="plus-minus-preview-container"
+          onClick={() => cartActions.onIncreaseProductQuantity(product)}
+        >
           <img className="h-8 w-8 absolute" src="/icons/icon-plus.svg" />
         </button>
         <div className="display-flex flex-vertical">
@@ -211,43 +215,12 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
               )}
             </button>
           )}
-          {/* {product.primaryQuantityUnit.sellingUnit.name ? ( 
-            <a
-              ng-click="ctrl.state.isUnitTypeDropdownToggled = !ctrl.state.isUnitTypeDropdownToggled"
-              className="relative"
-              ng-className="{'not-active': product.productSellingUnits.length === 1}"
-            >
-              <span
-                className="font-size-13 font-gray-600 unit-label c-p"
-                ng-className="{
-                  'dropdown-disabled': product.productSellingUnits.length === 1,
-                  'dropdown-enabled mr-10':product.productSellingUnits.length > 1}"
-              >
-                {product.primaryQuantityUnit.sellingUnit.name}
-                {product.productSellingUnits.length > 1 ? (
-                  <img src="/icons/icon-arrow-down.svg" className="h-7 w-7 font-green mr-2 dropdown-arrow" />
-                ) : (
-                  ""
-                )}
-              </span>
-              <ul
-                // ng-if="ctrl.state.isUnitTypeDropdownToggled"
-                className="dropdown-menu-sm display-flex flex-vertical align-center absolute"
-              >
-                 <li
-                ng-repeat="productSellingUnit in product.productSellingUnits"
-                ng-click="ctrl.onUnitTypeChange(product, productSellingUnit)"
-                className="dropdown-item"
-              >
-                <button type="button"> {productSellingUnit.sellingUnit.name} </button>
-              </li> 
-              </ul>
-            </a>
-          ) : (
-            ""
-          )}*/}
         </div>
-        <button type="button" className="plus-minus-preview-container" ng-click="onDecreaseProductQuantity()">
+        <button
+          type="button"
+          className="plus-minus-preview-container"
+          onClick={() => cartActions.onDecreaseProductQuantity(product)}
+        >
           <img className="h-8 w-8 absolute" src="/icons/icon-minus.svg" />
         </button>
       </div>
@@ -285,4 +258,6 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
       </div>
     </div>
   );
-}
+};
+
+export default CartItem;

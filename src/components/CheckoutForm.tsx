@@ -1,12 +1,12 @@
-import { Formik, Form, Field, isNaN } from "formik";
-import { ChangeEventHandler, useState } from "react";
+import { Formik, Form, Field } from "formik";
+import { useState } from "react";
 
 interface Values {
   cardHolderName: string;
-  cardHolderID: number | string;
-  cardNumber: number | string;
+  cardHolderID: string;
+  cardNumber: string;
   cardExpDate: string;
-  cardCVV: number | string;
+  cardCVV: string;
 }
 
 type Props = {
@@ -23,6 +23,50 @@ const CheckoutForm = ({ currencySign, cartTotal }: Props) => {
     }
   };
 
+  const handleFormFieldsValidations = (values: Values) => {
+    const errors = {} as Values;
+
+    if (!values.cardHolderName) {
+      errors.cardHolderName = "Required";
+    } else if (
+      !/^[a-zA-Z\u0590-\u05FF\u200f\u200e]([-']?[a-zA-Z\u0590-\u05FF\u200f\u200e]+)*( [a-zA-Z\u0590-\u05FF\u200f\u200e]([-']?[a-zA-Z\u0590-\u05FF\u200f\u200e]+)*)+$/.test(
+        values.cardHolderName
+      )
+    ) {
+      errors.cardHolderName = "Invalid card holder name";
+    }
+
+    if (!values.cardHolderID) {
+      errors.cardHolderID = "Required";
+    } else if (!/^[0-9]{9}$/.test(values.cardHolderID)) {
+      errors.cardHolderID = "Invalid card holder ID";
+    }
+
+    if (!values.cardNumber) {
+      errors.cardNumber = "Required";
+    } else if (
+      !/^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}(?:2131|1800|35\d{3})\d{11})$/.test(
+        values.cardNumber
+      )
+    ) {
+      errors.cardNumber = "Invalid card number";
+    }
+
+    if (!values.cardExpDate) {
+      errors.cardExpDate = "Required";
+    } else if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(values.cardExpDate)) {
+      errors.cardExpDate = "Invalid card expiration date";
+    }
+
+    if (!values.cardCVV) {
+      errors.cardCVV = "Required";
+    } else if (!/^[0-9]{3,4}$/.test(values.cardCVV)) {
+      errors.cardCVV = "Invalid card CVV";
+    }
+
+    return errors;
+  };
+
   return (
     <div>
       <Formik
@@ -33,49 +77,7 @@ const CheckoutForm = ({ currencySign, cartTotal }: Props) => {
           cardExpDate: "",
           cardCVV: "",
         }}
-        validate={(values) => {
-          const errors = {} as Values;
-
-          if (!values.cardHolderName) {
-            errors.cardHolderName = "Required";
-          } else if (
-            !/^[a-zA-Z\u0590-\u05FF\u200f\u200e]([-']?[a-zA-Z\u0590-\u05FF\u200f\u200e]+)*( [a-zA-Z\u0590-\u05FF\u200f\u200e]([-']?[a-zA-Z\u0590-\u05FF\u200f\u200e]+)*)+$/.test(
-              values.cardHolderName
-            )
-          ) {
-            errors.cardHolderName = "Invalid card holder name";
-          }
-
-          if (!values.cardHolderID) {
-            errors.cardHolderID = "Required";
-          } else if (!/^[0-9]{9}$/.test(values.cardHolderID)) {
-            errors.cardHolderID = "Invalid card holder ID";
-          }
-
-          if (!values.cardNumber) {
-            errors.cardNumber = "Required";
-          } else if (
-            !/^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|6(?:011|5[0-9]{2})[0-9]{12}(?:2131|1800|35\d{3})\d{11})$/.test(
-              values.cardNumber
-            )
-          ) {
-            errors.cardNumber = "Invalid card number";
-          }
-
-          if (!values.cardExpDate) {
-            errors.cardExpDate = "Required";
-          } else if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(values.cardExpDate)) {
-            errors.cardExpDate = "Invalid card expiration date";
-          }
-
-          if (!values.cardCVV) {
-            errors.cardCVV = "Required";
-          } else if (!/^[0-9]{3,4}$/.test(values.cardCVV)) {
-            errors.cardCVV = "Invalid card CVV";
-          }
-
-          return errors;
-        }}
+        validate={handleFormFieldsValidations}
         onSubmit={(values: Values, { setSubmitting }) => {
           setTimeout(() => {
             alert(JSON.stringify(values, null, 2));

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Comment, TProduct, Unit } from "types";
+import { TProduct, Unit } from "types";
 
 export type TCartState = {
   cartItems: TProduct[];
@@ -14,7 +14,6 @@ export type TCartActions = {
   onProductCommentSelect(product: TProduct, commentValue: string): void;
   onUnitTypeChange(product: TProduct, newQuantityUnit: Unit): void;
   onClearCart(): void;
-  onCartSubmit(): boolean;
 };
 
 export function useCartState() {
@@ -112,13 +111,6 @@ export function useCartState() {
     setCartState(initialValue);
   };
 
-  const onCartSubmit = () => {
-    return (
-      cartState.cartItems.filter((product) => product.commentType).length !==
-      cartState.cartItems.filter((product) => product.commentType && product.comment).length
-    );
-  };
-
   const calculateTotal = (array?: TProduct[]) => {
     let arr = array?.length ? array : [...cartState.cartItems];
     const initialValue = 0;
@@ -144,7 +136,6 @@ export function useCartState() {
       onRemoveProduct,
       onProductCommentSelect,
       onUnitTypeChange,
-      onCartSubmit,
     },
   };
 }

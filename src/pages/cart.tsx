@@ -16,6 +16,13 @@ const Cart: NextPage<Props> = ({ cartState, cartActions }) => {
     setUserComment(e.target.value);
   };
 
+  const onCartSubmit = () => {
+    return (
+      cartState.cartItems.filter((product) => product.commentType).length !==
+      cartState.cartItems.filter((product) => product.commentType && product.comment).length
+    );
+  };
+
   return (
     <div className="main-bg">
       <div className="container mx-auto px-28 pt-20">
@@ -121,12 +128,10 @@ const Cart: NextPage<Props> = ({ cartState, cartActions }) => {
               <div className="display-flex flex-vertical align-center mt-20">
                 <button
                   className="mobile-hide h-45 btn-green rounded-10 border-light-gray"
-                  disabled={
-                    !cartState.cartItems.length || userComment.length < 3 || cartActions.onCartSubmit()
-                  }
+                  disabled={!cartState.cartItems.length || userComment.length < 3 || onCartSubmit()}
                 >
                   <span className="mobile-hide font-white font-size-18 text-weight-500 mx-auto my-auto">
-                    {!cartState.cartItems.length || userComment.length < 3 ? (
+                    {!cartState.cartItems.length || userComment.length < 3 || onCartSubmit() ? (
                       <a>המשך לתשלום</a>
                     ) : (
                       <Link href="/checkout">

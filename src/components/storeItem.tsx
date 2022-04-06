@@ -22,6 +22,8 @@ const StoreItem = ({ product, currencySign, cartActions }: Props) => {
     productQuality,
   } = product;
 
+  console.log("render test");
+
   return (
     <div className="store-item rounded-10 display-flex flex-vertical align-center justify-around">
       <div className="store-item-overlay font-gray-900 text-sm">
