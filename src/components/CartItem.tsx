@@ -269,11 +269,10 @@ export default function CartItem({ product, cartItemsLength, index, cartActions,
         <div className="discount-ribbon absolute display-flex align-center px-20">
           <div className="discount-ribbon-tip-right"></div>
           <div className="discount-ribbon-tip-left"></div>
-          <img className="h-36 w-36 font-green mr-15" src="//icons/icon-discount.svg" alt="item-discount" />
+          <img className="h-36 w-36 font-green mr-15" src="/icons/icon-discount.svg" alt="item-discount" />
           <div className="text-lg font-white mr-10 font-heebo">
             <span className="text-weight-500">זכית בהנחה!</span>
             <span>
-              {" "}
               2 מארזי ענבים ב {currencySign}
               44
             </span>

@@ -85,30 +85,33 @@ const HeaderMenu = () => {
             </a>
             <div className="text-title mb-5 mr-10">{storeData?.name}</div>
           </div>
-          <div className="search-box-container ml-10">
-            <label>
-              <input className="search-box" placeholder="חיפוש מוצר" />
-            </label>
-            <img className="search-icon" src="/icons/icon-search.svg" />
-          </div>
-          <div className="display-flex align-center w-250">
-            <img className="h-32 w-32" src="/icons/icon-delivery-rounded.svg" />
-            <div className="mr-10">
-              <span className="text-weight-400">משה דיין 20, תל אביב</span>
-              <br />
-              <span className="text-weight-300">מחר, 12:00-16:00</span>
-            </div>
-          </div>
-          <div className="display-flex c-p align-center">
-            <img className="h-32 w-32" src="/icons/icon-user.svg" />
-            <div className="display-flex align-center mr-5 ml-5">
-              <span className="text-weight-400">היי אינסה!</span>
-              <svg className="mr-10 h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
-          </div>
-          {router.pathname === "/checkout" ? (
+          {router.pathname !== "/checkout" ? (
+            <>
+              <div className="search-box-container ml-10">
+                <label>
+                  <input className="search-box" placeholder="חיפוש מוצר" />
+                </label>
+                <img className="search-icon" src="/icons/icon-search.svg" />
+              </div>
+              <div className="display-flex align-center w-250">
+                <img className="h-32 w-32" src="/icons/icon-delivery-rounded.svg" />
+                <div className="mr-10">
+                  <span className="text-weight-400">משה דיין 20, תל אביב</span>
+                  <br />
+                  <span className="text-weight-300">מחר, 12:00-16:00</span>
+                </div>
+              </div>
+              <div className="display-flex c-p align-center">
+                <img className="h-32 w-32" src="/icons/icon-user.svg" />
+                <div className="display-flex align-center mr-5 ml-5">
+                  <span className="text-weight-400">היי אינסה!</span>
+                  <svg className="mr-10 h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </>
+          ) : (
             <div className="c-p">
               <Link href="/cart">
                 <a className="display-flex align-center">
@@ -117,8 +120,6 @@ const HeaderMenu = () => {
                 </a>
               </Link>
             </div>
-          ) : (
-            ""
           )}
         </div>
       </div>

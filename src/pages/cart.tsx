@@ -17,7 +17,7 @@ const Cart: NextPage<Props> = ({ cartState, cartActions }) => {
   };
 
   return (
-    <div className="cart-bg">
+    <div className="main-bg">
       <div className="container mx-auto px-28 pt-20">
         <div className="back-btn c-p mb-5">
           <div className="display-flex align-center font-blue">

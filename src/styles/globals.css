@@ -82,16 +82,11 @@ body {
   background-color: #eef1ef;
 }
 
-.cart-bg {
+.main-bg {
   background-image: linear-gradient(#33cc66 45vh, #f7f9f9 45vh);
   background-attachment: fixed;
   margin-top: 80px;
-}
-
-.checkout-bg {
-  background-image: linear-gradient(#33cc66 45vh, #f7f9f9 45vh);
-  background-attachment: fixed;
-  margin-top: 80px;
+  padding-bottom: 73px;
 }
 
 /* Loading Spinner */
@@ -1513,6 +1508,10 @@ button:disabled {
   padding-top: 10px;
 }
 
+.pb-73 {
+  padding-bottom: 73px;
+}
+
 .pb-10 {
   padding-bottom: 10px;
 }
@@ -1996,7 +1995,6 @@ button:disabled {
     width: 100%;
     height: 62px;
     background-color: #333333;
-    margin-top: 73px;
   }
 
   .big-footer ~ .desktop-footer {
@@ -2004,7 +2002,6 @@ button:disabled {
   }
 
   .big-footer {
-    margin-top: 73px;
     height: 233px;
     background-color: #005350;
     bottom: 62px;
