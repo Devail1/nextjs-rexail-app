@@ -31,18 +31,16 @@ export function useCartState() {
         ? product.quantity + product.primaryQuantityUnit.sellingUnit.amountJumps
         : product.primaryQuantityUnit.sellingUnit.amountJumps;
 
+      let arr = [product, ...cartState.cartItems];
+
       if (!cartState.cartItems.includes(product)) {
-        let arr = [product, ...cartState.cartItems];
         setCartState({
           ...cartState,
           cartItems: arr,
           cartTotal: calculateTotal(arr),
         });
       } else {
-        setCartState({
-          ...cartState,
-          cartTotal: calculateTotal(cartState.cartItems),
-        });
+        updateCart();
       }
     }
   };
@@ -50,20 +48,10 @@ export function useCartState() {
   const onDecreaseProductQuantity = (product: TProduct) => {
     if (product.quantity! > product.primaryQuantityUnit.sellingUnit.amountJumps) {
       product.quantity = product.quantity! - product.primaryQuantityUnit.sellingUnit.amountJumps;
-      if (!cartState.cartItems.includes(product)) {
-        let arr = [product, ...cartState.cartItems];
-        setCartState({
-          ...cartState,
-          cartItems: arr,
-          cartTotal: calculateTotal(arr),
-        });
-      } else {
-        setCartState({
-          ...cartState,
-          cartTotal: calculateTotal(cartState.cartItems),
-        });
-      }
-    } else onRemoveProduct(product);
+      updateCart();
+    } else {
+      onRemoveProduct(product);
+    }
   };
 
   const onRemoveProduct = (product: TProduct) => {
@@ -123,19 +111,20 @@ export function useCartState() {
     setCartState(initialValue);
   }
 
-  function calculateTotal(array: TProduct[]) {
+  function calculateTotal(array?: TProduct[]) {
+    let arr = array?.length ? array : [...cartState.cartItems];
     const initialValue = 0;
-    const sumWithInitial = array.reduce(
+    const sumWithInitial = arr.reduce(
       (totalSum: number, product: TProduct) => totalSum + product.price * product.quantity!,
       initialValue
     );
-
+    if (isNaN(sumWithInitial)) return "0.00";
     return sumWithInitial.toFixed(2);
   }
 
   // Calling setState in order to re-render relevant component(s)
   function updateCart() {
-    setCartState({ ...cartState });
+    setCartState({ ...cartState, cartTotal: calculateTotal() });
   }
 
   return {
