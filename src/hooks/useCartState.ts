@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { TProduct, Unit } from "types";
 
+export type TCartStore = {
+  cartState: TCartState;
+  cartActions: TCartActions;
+};
+
 export type TCartState = {
   cartItems: TProduct[];
   cartTotal: string;

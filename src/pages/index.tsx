@@ -2,7 +2,6 @@ import type { GetStaticProps, NextPage } from "next";
 import { TCategory, TProduct } from "types";
 
 import { useContext, useEffect, useState } from "react";
-import { TCartActions, TCartState } from "hooks/useCartState";
 import { DataContext } from "pages/_app";
 
 import Head from "next/head";
@@ -11,13 +10,13 @@ import StoreItem from "components/StoreItem";
 import List from "components/List";
 import SideCartItem from "components/SideCartItem";
 
-type Props = {
-  cartState: TCartState;
-  cartActions: TCartActions;
-};
+const Store: NextPage = () => {
+  console.log("Store Page Render");
 
-const Store: NextPage<Props> = ({ cartState, cartActions }) => {
-  const { productsData } = useContext(DataContext);
+  const {
+    productsData,
+    cartStore: { cartState, cartActions },
+  } = useContext(DataContext);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
@@ -75,20 +74,16 @@ const Store: NextPage<Props> = ({ cartState, cartActions }) => {
           <div className="store-widget">
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
             <div className="store-items-wrapper mt-30">
-              {/* {selectedCategory?.children?.map((item) => {
-                return <StoreItem key={item.id} currencySign={cartState.currencySign} product={item} />;
-              })} */}
-              <List<TProduct>
-                items={selectedCategory?.children!}
-                renderItem={(item) => (
+              {selectedCategory?.children?.map((item) => {
+                return (
                   <StoreItem
                     key={item.id}
                     currencySign={cartState.currencySign}
                     product={item}
                     cartActions={cartActions}
                   />
-                )}
-              />
+                );
+              })}
             </div>
           </div>
           <div className="cart-preview-wrapper">
