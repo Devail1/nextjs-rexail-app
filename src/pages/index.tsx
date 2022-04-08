@@ -9,14 +9,12 @@ import Link from "next/link";
 import StoreItem from "components/StoreItem";
 import List from "components/List";
 import SideCartItem from "components/SideCartItem";
+import { useCartState } from "hooks/useCartState";
 
 const Store: NextPage = () => {
   console.log("Store Page Render");
-
-  const {
-    productsData,
-    cartStore: { cartState, cartActions },
-  } = useContext(DataContext);
+  const { cartState, cartActions } = useCartState();
+  const { productsData } = useContext(DataContext);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 

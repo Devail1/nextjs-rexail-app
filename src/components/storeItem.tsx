@@ -1,4 +1,5 @@
-import { TCartActions } from "hooks/useCartState";
+import { TCartActions, TCartState, useCartState } from "hooks/useCartState";
+import React from "react";
 import { TProduct, Unit } from "types";
 
 interface Props {
@@ -222,4 +223,18 @@ const StoreItem = ({ product, currencySign, cartActions }: Props) => {
   );
 };
 
-export default StoreItem;
+function areEqual(prevProps: Props, nextProps: Props) {
+  if (prevProps.product) console.log("prevProps", prevProps.product);
+  if (nextProps.product) console.log("nextProps", nextProps.product);
+
+  // console.log("prevProps", prevProps.cartState.cartItems.length);
+  // console.log("nextProps", nextProps.cartState.cartItems.length);
+
+  // return (
+  //   // prevProps.product.quantity === nextProps.product.quantity &&
+  //   // prevProps.cartState.cartItems.length === nextProps.cartState.cartItems.length
+  // );
+  return false;
+}
+
+export default React.memo(StoreItem, areEqual);
