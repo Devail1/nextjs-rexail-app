@@ -9,14 +9,10 @@ const Cart: NextPage = () => {
   const [userComment, setUserComment] = useState("");
 
   const {
-    // cartStore:
-    cartState,
-    cartActions,
-  } = useCartState();
+    cartStore: { cartState, cartActions },
+  } = useContext(DataContext);
 
-  // const {
-  //   cartStore: { cartState, cartActions },
-  // } = useContext(DataContext);
+  console.log("file: cart.tsx ~ line 16 ~ cartState", cartState);
 
   const handleUserComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setUserComment(e.target.value);

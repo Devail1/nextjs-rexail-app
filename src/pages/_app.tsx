@@ -18,17 +18,15 @@ interface MyAppProps extends AppProps {
 export type TDataContextProvider = {
   storeData: TStoreData;
   productsData: TCategory[];
-  // cartStore: TCartStore;
+  cartStore: TCartStore;
 };
 
 export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
 
 function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
-  // const cartStore = useCartState();
-  console.log("App  Render");
-
+  const cartStore = useCartState();
   return (
-    <DataContext.Provider value={{ storeData, productsData }}>
+    <DataContext.Provider value={{ storeData, productsData, cartStore }}>
       <Layout>
         <Component {...pageProps} />
       </Layout>

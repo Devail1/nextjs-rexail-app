@@ -9,12 +9,16 @@ import Link from "next/link";
 import StoreItem from "components/StoreItem";
 import List from "components/List";
 import SideCartItem from "components/SideCartItem";
-import { useCartState } from "hooks/useCartState";
+import CartItem from "components/CartItem";
 
 const Store: NextPage = () => {
   console.log("Store Page Render");
-  const { cartState, cartActions } = useCartState();
-  const { productsData } = useContext(DataContext);
+
+  const {
+    productsData,
+    cartStore: { cartState, cartActions },
+  } = useContext(DataContext);
+  console.log("file: index.tsx ~ line 17 ~ cartState", cartState);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
@@ -78,7 +82,8 @@ const Store: NextPage = () => {
                     key={item.id}
                     currencySign={cartState.currencySign}
                     product={item}
-                    cartActions={cartActions}
+                    // cartItems={cartState.cartItems}
+                    // cartActions={cartActions}
                   />
                 );
               })}
