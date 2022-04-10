@@ -1,4 +1,4 @@
-import { TCartActions } from "hooks/useCartState";
+import { TCartActions } from "hooks/useCartStore";
 import { useState } from "react";
 import { TProduct } from "types";
 

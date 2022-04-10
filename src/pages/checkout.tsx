@@ -1,5 +1,5 @@
 import CheckoutForm from "components/CheckoutForm";
-import { TCartState } from "hooks/useCartState";
+import { TCartState } from "hooks/useCartStore";
 import { GetStaticProps, NextPage } from "next";
 
 type Props = {

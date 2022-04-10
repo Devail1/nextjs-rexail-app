@@ -21,7 +21,7 @@ export type TCartActions = {
   onClearCart(): void;
 };
 
-export function useCartState() {
+export function useCartStore() {
   const initialValue = {
     cartItems: [],
     cartTotal: "0.00",

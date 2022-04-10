@@ -1,5 +1,4 @@
 import CartItem from "components/CartItem";
-import { useCartState } from "hooks/useCartState";
 import { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
 import { useContext, useState } from "react";
