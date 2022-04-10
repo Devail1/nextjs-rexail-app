@@ -1,11 +1,16 @@
 import { DataContext } from "pages/_app";
-import { useContext } from "react";
+import { ReactEventHandler, useContext } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
 const HeaderMenu = () => {
-  const { storeData } = useContext(DataContext);
+  const { storeData, searchQuery, setSearchQuery } = useContext(DataContext);
   const router = useRouter();
+
+  const handleSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   return (
     <header>
       {router.pathname === "/" ? (
@@ -14,7 +19,12 @@ const HeaderMenu = () => {
             <div className="pt-20 display-flex align-center justify-around px-5">
               <div className="search-box-container mr-auto">
                 <label>
-                  <input className="search-box border-white" placeholder="חיפוש מוצר" />
+                  <input
+                    className="search-box border-white"
+                    placeholder="חיפוש מוצר"
+                    onChange={(e) => handleSearchQuery(e)}
+                    value={searchQuery}
+                  />
                 </label>
                 <img className="search-icon" src="/icons/icon-search.svg" />
               </div>
@@ -89,7 +99,12 @@ const HeaderMenu = () => {
             <>
               <div className="search-box-container ml-10">
                 <label>
-                  <input className="search-box" placeholder="חיפוש מוצר" />
+                  <input
+                    className="search-box"
+                    placeholder="חיפוש מוצר"
+                    onChange={(e) => handleSearchQuery(e)}
+                    value={searchQuery}
+                  />
                 </label>
                 <img className="search-icon" src="/icons/icon-search.svg" />
               </div>

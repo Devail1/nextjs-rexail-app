@@ -1,7 +1,7 @@
 import type { GetStaticProps, NextPage } from "next";
 import { TCategory, TProduct } from "types";
 
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { DataContext } from "pages/_app";
 
 import Head from "next/head";
@@ -9,16 +9,16 @@ import Link from "next/link";
 import StoreItem from "components/StoreItem";
 import List from "components/List";
 import SideCartItem from "components/SideCartItem";
-import CartItem from "components/CartItem";
 
 const Store: NextPage = () => {
   console.log("Store Page Render");
 
   const {
+    searchQuery,
+    setSearchQuery,
     productsData,
     cartStore: { cartState, cartActions },
   } = useContext(DataContext);
-  console.log("file: index.tsx ~ line 17 ~ cartState", cartState);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
@@ -27,6 +27,25 @@ const Store: NextPage = () => {
       setSelectedCategory(productsData[0]);
     }
   }, [productsData]);
+
+  useEffect(() => {
+    if (selectedCategory.children) {
+      let currentCategory = productsData.filter((category) => category.id === selectedCategory.id)[0];
+      if (searchQuery) {
+        setSelectedCategory({
+          ...selectedCategory,
+          children: currentCategory.children?.filter((product) => product.fullName.includes(searchQuery)),
+        });
+      } else {
+        setSelectedCategory(currentCategory);
+      }
+    }
+  }, [searchQuery]);
+
+  const handleCategoryClick = (item: TCategory) => {
+    setSelectedCategory(item);
+    setSearchQuery("");
+  };
 
   return (
     <div className="pb-73">
@@ -44,7 +63,7 @@ const Store: NextPage = () => {
                 key={item.id}
                 className={selectedCategory?.id === item.id ? "category selected" : "category"}
               >
-                <button type="button" onClick={() => setSelectedCategory(item)}>
+                <button type="button" onClick={() => handleCategoryClick(item)}>
                   {item.name}&nbsp;
                 </button>
               </li>
@@ -58,7 +77,7 @@ const Store: NextPage = () => {
                   items={productsData?.slice(10, productsData.length)}
                   renderItem={(item) => (
                     <li key={item.id} className="category show-more">
-                      <button type="button" onClick={() => setSelectedCategory(item)}>
+                      <button type="button" onClick={() => handleCategoryClick(item)}>
                         {item.name}&nbsp;
                       </button>
                     </li>
@@ -77,16 +96,15 @@ const Store: NextPage = () => {
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
             <div className="store-items-wrapper mt-30">
               {selectedCategory?.children?.map((item) => {
-                return (
-                  <StoreItem
-                    key={item.id}
-                    currencySign={cartState.currencySign}
-                    product={item}
-                    // cartItems={cartState.cartItems}
-                    // cartActions={cartActions}
-                  />
-                );
+                return <StoreItem key={item.id} currencySign={cartState.currencySign} product={item} />;
               })}
+              {searchQuery && !selectedCategory?.children?.length ? (
+                <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
+                  לא נמצאו תוצאות לחיפוש
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           </div>
           <div className="cart-preview-wrapper">

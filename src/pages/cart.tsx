@@ -12,8 +12,6 @@ const Cart: NextPage = () => {
     cartStore: { cartState, cartActions },
   } = useContext(DataContext);
 
-  console.log("file: cart.tsx ~ line 16 ~ cartState", cartState);
-
   const handleUserComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setUserComment(e.target.value);
   };

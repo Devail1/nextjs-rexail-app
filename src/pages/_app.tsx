@@ -4,7 +4,7 @@ import type { AppProps } from "next/app";
 
 import { TCategory, TStoreData } from "types";
 
-import { createContext } from "react";
+import { createContext, Dispatch, SetStateAction, useState } from "react";
 import { TCartStore, useCartState } from "hooks/useCartState";
 import { formatData } from "utils";
 
@@ -19,14 +19,19 @@ export type TDataContextProvider = {
   storeData: TStoreData;
   productsData: TCategory[];
   cartStore: TCartStore;
+  searchQuery: string;
+  setSearchQuery: Dispatch<SetStateAction<string>>;
 };
 
 export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
 
 function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
   const cartStore = useCartState();
+
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
-    <DataContext.Provider value={{ storeData, productsData, cartStore }}>
+    <DataContext.Provider value={{ storeData, productsData, cartStore, searchQuery, setSearchQuery }}>
       <Layout>
         <Component {...pageProps} />
       </Layout>
