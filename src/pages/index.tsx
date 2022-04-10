@@ -1,11 +1,11 @@
-import type { GetStaticProps, NextPage } from "next";
-import { TCategory, TProduct } from "types";
-
 import { useContext, useEffect, useMemo, useState } from "react";
-import { DataContext } from "pages/_app";
-
+import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { DataContext } from "pages/_app";
+
+import { TCategory, TProduct } from "types";
+
 import StoreItem from "components/StoreItem";
 import List from "components/List";
 import SideCartItem from "components/SideCartItem";
@@ -218,10 +218,10 @@ const Store: NextPage = () => {
   );
 };
 
-// Store.whyDidYouRender = {
-//   logOnDifferentValues: true,
-//   customName: "Menu",
-// };
+Store.whyDidYouRender = {
+  logOnDifferentValues: true,
+  customName: "Store",
+};
 
 export default Store;
 

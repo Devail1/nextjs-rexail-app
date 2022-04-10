@@ -1,8 +1,8 @@
-import CartItem from "components/CartItem";
+import { useContext, useState } from "react";
 import { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
-import { useContext, useState } from "react";
 import { DataContext } from "./_app";
+import CartItem from "components/CartItem";
 
 const Cart: NextPage = () => {
   const [userComment, setUserComment] = useState("");

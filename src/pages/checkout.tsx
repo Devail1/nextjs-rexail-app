@@ -1,12 +1,13 @@
-import CheckoutForm from "components/CheckoutForm";
-import { TCartState } from "hooks/useCartStore";
+import { useContext } from "react";
 import { GetStaticProps, NextPage } from "next";
+import { DataContext } from "./_app";
+import CheckoutForm from "components/CheckoutForm";
 
-type Props = {
-  cartState: TCartState;
-};
+const Checkout: NextPage = () => {
+  const {
+    cartStore: { cartState },
+  } = useContext(DataContext);
 
-const Checkout: NextPage<Props> = ({ cartState }) => {
   return (
     <div className="main-bg">
       <div className="container mx-auto pt-25">
