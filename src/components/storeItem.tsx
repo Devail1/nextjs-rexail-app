@@ -1,3 +1,4 @@
+import { useCartStore } from "hooks/useCartStore";
 import { DataContext } from "pages/_app";
 import React, { useContext } from "react";
 import { TProduct, Unit } from "types";
@@ -8,9 +9,12 @@ interface Props {
 }
 
 const StoreItem = ({ product, currencySign }: Props) => {
-  const {
-    cartStore: { cartActions },
-  } = useContext(DataContext);
+  // const {
+  //   dataStore: {
+  //     cartStore: { cartActions },
+  //   },
+  // } = useContext(DataContext);
+  const { cartState, cartActions } = useCartStore();
 
   let {
     fullName,

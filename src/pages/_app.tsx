@@ -6,8 +6,8 @@ import type { AppProps } from "next/app";
 
 import { TCategory, TStoreData } from "types";
 
-import { createContext, Dispatch, SetStateAction, useState } from "react";
-import { TCartStore, useCartStore } from "hooks/useCartStore";
+import { createContext, Dispatch, SetStateAction, useEffect, useState } from "react";
+import { TCartActions, TCartState, TCartStore, useCartStore } from "hooks/useCartStore";
 import { formatData } from "utils";
 
 import Layout from "components/Layout";
@@ -20,22 +20,42 @@ interface MyAppProps extends AppProps {
 export type TDataContextProvider = {
   storeData: TStoreData;
   productsData: TCategory[];
-  cartStore: TCartStore;
+  // cartStore: TCartStore;
+  cartActions: TCartActions;
+  cartState: TCartState;
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
 };
 
-export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
+type TDataContextProviderProps = {
+  dataStore: TDataContextProvider;
+  setDataStore: Dispatch<SetStateAction<TDataContextProvider>>;
+};
+
+export const DataContext = createContext<TDataContextProviderProps>({} as TDataContextProviderProps);
 
 function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
   console.log("App Rendered");
 
-  const cartStore = useCartStore();
+  const [dataStore, setDataStore] = useState({} as TDataContextProvider);
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  useEffect(() => {
+    if (storeData && productsData)
+      setDataStore({
+        ...dataStore,
+        storeData,
+        productsData,
+        searchQuery,
+        setSearchQuery,
+        // cartActions,
+        // cartState,
+      });
+  }, []);
+
   return (
-    <DataContext.Provider value={{ storeData, productsData, cartStore, searchQuery, setSearchQuery }}>
+    <DataContext.Provider value={{ dataStore, setDataStore }}>
       <Layout>
         <Component {...pageProps} />
       </Layout>

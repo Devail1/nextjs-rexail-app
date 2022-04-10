@@ -9,16 +9,28 @@ import { TCategory, TProduct } from "types";
 import StoreItem from "components/StoreItem";
 import List from "components/List";
 import SideCartItem from "components/SideCartItem";
+import { useCartStore } from "hooks/useCartStore";
 
 const Store: NextPage = () => {
   console.log("Store Page Render");
 
+  const { cartActions, cartState } = useCartStore();
+
+  // const cartStore = useCartStore();
+
   const {
-    searchQuery,
-    setSearchQuery,
-    productsData,
-    cartStore: { cartState, cartActions },
+    dataStore: { productsData, /* cartActions, cartState,*/ searchQuery, setSearchQuery },
+    setDataStore,
+    dataStore,
   } = useContext(DataContext);
+
+  useEffect(() => {
+    if (cartState.cartItems) {
+      setDataStore({ ...dataStore, cartActions, cartState });
+    }
+  }, [cartState.cartItems]);
+
+  console.log("file: index.tsx ~ line 27 ~ cartState", cartState);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
@@ -80,7 +92,7 @@ const Store: NextPage = () => {
               </li>
             )}
           />
-          {productsData.length > 10 ? (
+          {productsData && productsData.length > 10 ? (
             <ul className="category show-more-categories">
               <span>עוד</span>
               <ul className="categories-show-more display-flex flex-vertical absolute pt-10 rounded-10">
@@ -106,10 +118,10 @@ const Store: NextPage = () => {
           <div className="store-widget">
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
             <div className="store-items-wrapper mt-30">
-              {/* {selectedCategory?.children?.map((item) => {
+              {selectedCategory?.children?.map((item) => {
                 return <StoreItem key={item.id} currencySign={cartState.currencySign} product={item} />;
-              })} */}
-              {memoizedStoreItemList}
+              })}
+              {/* {memoizedStoreItemList} */}
               {searchQuery && !selectedCategory?.children?.length ? (
                 <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
                   לא נמצאו תוצאות לחיפוש
@@ -125,22 +137,22 @@ const Store: NextPage = () => {
                 <img className="w-22 h-22 ml-10" src="/icons/button-arrow-up.svg" />
                 <img className="icon-basket" src="/icons/icon-basket-green.svg" />
                 <span className="text-sm font-white mt-8 cart-preview-items-count">
-                  {cartState.cartItems.length}
+                  {cartState?.cartItems.length}
                 </span>
                 <div className="display-flex flex-vertical font-white mr-8 ml-auto">
                   <span className="text-weight-300 font-size-14">סל הקניות שלי</span>
                   <span className="font-size-18">
-                    {cartState.currencySign}
-                    {cartState.cartTotal}
+                    {cartState?.currencySign}
+                    {cartState?.cartTotal}
                   </span>
                 </div>
                 <button
                   type="button"
                   className="proceed-to-checkout-btn font-white font-size-16"
-                  disabled={!cartState.cartItems.length}
+                  disabled={!cartState?.cartItems.length}
                 >
                   <span>
-                    {!cartState.cartItems.length ? (
+                    {!cartState?.cartItems.length ? (
                       <a>המשך לתשלום</a>
                     ) : (
                       <Link href="/cart">
@@ -154,14 +166,14 @@ const Store: NextPage = () => {
                 <button
                   type="button"
                   className="c-p display-flex align-center h-full w-85 mr-auto"
-                  onClick={cartActions.onClearCart}
+                  onClick={cartActions?.onClearCart}
                 >
                   <img src="/icons/icon-trash.svg" />
                   <span className="mr-5 font-size-14"> מחיקת סל </span>
                 </button>
               </div>
               <div className="cart-items-preview-wrapper">
-                {!cartState.cartItems.length ? (
+                {!cartState?.cartItems.length ? (
                   <div className="display-flex flex-vertical align-center pt-20">
                     <img src="/images/empty-basket.png" />
                     <span className="mt-10 font-size-22 font-blue text-weight-700 font-heebo">
@@ -171,24 +183,24 @@ const Store: NextPage = () => {
                   </div>
                 ) : (
                   <List<TProduct>
-                    items={cartState.cartItems}
+                    items={cartState?.cartItems}
                     renderItem={(item) => (
-                      <SideCartItem key={item.id} currencySign={cartState.currencySign} product={item} />
+                      <SideCartItem key={item.id} currencySign={cartState?.currencySign} product={item} />
                     )}
                   />
                 )}
               </div>
               <div className="cart-preview-footer px-28 display-flex flex-vertical align-center justify-center">
-                <button type="button" className="btn-green w-full" disabled={!cartState.cartItems.length}>
-                  {!cartState.cartItems.length ? (
+                <button type="button" className="btn-green w-full" disabled={!cartState?.cartItems.length}>
+                  {!cartState?.cartItems.length ? (
                     <a className="w-full h-full">
                       <div className="display-flex align-center justify-between h-full">
                         <span className="font-heebo text-weight-500 font-white checkout-text">
                           המשך לתשלום
                         </span>
                         <span className="font-heebo text-weight-500 font-white total-sum">
-                          {cartState.currencySign}
-                          {cartState.cartTotal}
+                          {cartState?.currencySign}
+                          {cartState?.cartTotal}
                         </span>
                       </div>
                     </a>
@@ -200,8 +212,8 @@ const Store: NextPage = () => {
                             המשך לתשלום
                           </span>
                           <span className="font-heebo text-weight-500 font-white total-sum">
-                            {cartState.currencySign}
-                            {cartState.cartTotal}
+                            {cartState?.currencySign}
+                            {cartState?.cartTotal}
                           </span>
                         </div>
                       </a>
@@ -218,10 +230,10 @@ const Store: NextPage = () => {
   );
 };
 
-Store.whyDidYouRender = {
-  logOnDifferentValues: true,
-  customName: "Store",
-};
+// Store.whyDidYouRender = {
+//   logOnDifferentValues: true,
+//   customName: "Store",
+// };
 
 export default Store;
 
