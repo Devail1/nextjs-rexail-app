@@ -28,6 +28,8 @@ export type TDataContextProvider = {
 export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
 
 function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
+  console.log("App Rendered");
+
   const cartStore = useCartStore();
 
   const [searchQuery, setSearchQuery] = useState("");
