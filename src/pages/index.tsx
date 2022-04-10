@@ -37,19 +37,20 @@ const Store: NextPage = () => {
   );
 
   useEffect(() => {
-    if (selectedCategory.children) {
-      let currentCategory = productsData.filter((category) => category.id === selectedCategory.id)[0];
-      if (searchQuery.length >= 3) {
-        setTimeout(() => {
+    let debounce = setTimeout(() => {
+      if (selectedCategory.children) {
+        let currentCategory = productsData.filter((category) => category.id === selectedCategory.id)[0];
+        if (searchQuery.length >= 3) {
           setSelectedCategory({
             ...selectedCategory,
             children: currentCategory.children?.filter((product) => product.fullName.includes(searchQuery)),
           });
-        }, 800);
-      } else {
-        setSelectedCategory(currentCategory);
+        } else {
+          setSelectedCategory(currentCategory);
+        }
       }
-    }
+    }, 800);
+    return () => clearTimeout(debounce);
   }, [searchQuery]);
 
   const handleCategoryClick = (item: TCategory) => {
@@ -105,6 +106,9 @@ const Store: NextPage = () => {
           <div className="store-widget">
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
             <div className="store-items-wrapper mt-30">
+              {/* {selectedCategory?.children?.map((item) => {
+                return <StoreItem key={item.id} currencySign={cartState.currencySign} product={item} />;
+              })} */}
               {memoizedStoreItemList}
               {searchQuery && !selectedCategory?.children?.length ? (
                 <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
@@ -173,7 +177,7 @@ const Store: NextPage = () => {
                         key={item.id}
                         currencySign={cartState.currencySign}
                         product={item}
-                        cartActions={cartActions}
+                        // cartActions={cartActions}
                       />
                     )}
                   />
@@ -218,6 +222,11 @@ const Store: NextPage = () => {
     </div>
   );
 };
+
+// Store.whyDidYouRender = {
+//   logOnDifferentValues: true,
+//   customName: "Menu",
+// };
 
 export default Store;
 
