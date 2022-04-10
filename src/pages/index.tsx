@@ -1,7 +1,7 @@
 import type { GetStaticProps, NextPage } from "next";
 import { TCategory, TProduct } from "types";
 
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { DataContext } from "pages/_app";
 
 import Head from "next/head";
@@ -28,14 +28,24 @@ const Store: NextPage = () => {
     }
   }, [productsData]);
 
+  const memoizedStoreItemList = useMemo(
+    () =>
+      selectedCategory.children?.map((item) => (
+        <StoreItem key={item.id} currencySign={cartState.currencySign} product={item} />
+      )),
+    [selectedCategory.children]
+  );
+
   useEffect(() => {
     if (selectedCategory.children) {
       let currentCategory = productsData.filter((category) => category.id === selectedCategory.id)[0];
-      if (searchQuery) {
-        setSelectedCategory({
-          ...selectedCategory,
-          children: currentCategory.children?.filter((product) => product.fullName.includes(searchQuery)),
-        });
+      if (searchQuery.length >= 3) {
+        setTimeout(() => {
+          setSelectedCategory({
+            ...selectedCategory,
+            children: currentCategory.children?.filter((product) => product.fullName.includes(searchQuery)),
+          });
+        }, 800);
       } else {
         setSelectedCategory(currentCategory);
       }
@@ -95,9 +105,7 @@ const Store: NextPage = () => {
           <div className="store-widget">
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
             <div className="store-items-wrapper mt-30">
-              {selectedCategory?.children?.map((item) => {
-                return <StoreItem key={item.id} currencySign={cartState.currencySign} product={item} />;
-              })}
+              {memoizedStoreItemList}
               {searchQuery && !selectedCategory?.children?.length ? (
                 <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
                   לא נמצאו תוצאות לחיפוש
