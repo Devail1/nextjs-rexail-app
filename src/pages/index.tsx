@@ -173,12 +173,7 @@ const Store: NextPage = () => {
                   <List<TProduct>
                     items={cartState.cartItems}
                     renderItem={(item) => (
-                      <SideCartItem
-                        key={item.id}
-                        currencySign={cartState.currencySign}
-                        product={item}
-                        // cartActions={cartActions}
-                      />
+                      <SideCartItem key={item.id} currencySign={cartState.currencySign} product={item} />
                     )}
                   />
                 )}

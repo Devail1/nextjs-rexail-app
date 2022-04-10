@@ -1,15 +1,18 @@
-import { TCartActions } from "hooks/useCartState";
-import { useState } from "react";
+import { DataContext } from "pages/_app";
+import { useContext, useState } from "react";
 import { TProduct } from "types";
 
 interface Props {
   product: TProduct;
   currencySign: string;
-  cartActions: TCartActions;
 }
 
-const SideCartItem = ({ product, currencySign, cartActions }: Props) => {
+const SideCartItem = ({ product, currencySign }: Props) => {
   const [isUnitTypeDropdownToggled, setIsUnitTypeDropdownToggled] = useState(false);
+
+  const {
+    cartStore: { cartActions },
+  } = useContext(DataContext);
 
   return (
     <div id={product.id.toString()} className="item-preview display-flex align-center">
