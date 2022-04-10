@@ -1,7 +1,7 @@
-import { DataContext } from "pages/_app";
-import { ReactEventHandler, useContext } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { DataContext } from "pages/_app";
+import { useContext } from "react";
 
 const HeaderMenu = () => {
   const { storeData, searchQuery, setSearchQuery } = useContext(DataContext);
