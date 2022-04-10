@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@welldone-software/why-did-you-render": "^7.0.1",
     "formik": "^2.2.9",
     "next": "^12.1.4",
     "react": "17.0.2",

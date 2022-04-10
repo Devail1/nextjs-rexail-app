@@ -1,3 +1,5 @@
+import "wdyr";
+
 import "../styles/globals.css";
 import App from "next/app";
 import type { AppProps } from "next/app";
@@ -5,7 +7,7 @@ import type { AppProps } from "next/app";
 import { TCategory, TStoreData } from "types";
 
 import { createContext, Dispatch, SetStateAction, useState } from "react";
-import { TCartStore, useCartState } from "hooks/useCartState";
+import { TCartStore, useCartStore } from "hooks/useCartStore";
 import { formatData } from "utils";
 
 import Layout from "components/Layout";
@@ -26,7 +28,7 @@ export type TDataContextProvider = {
 export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
 
 function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
-  const cartStore = useCartState();
+  const cartStore = useCartStore();
 
   const [searchQuery, setSearchQuery] = useState("");
 
