@@ -2,12 +2,12 @@ import { CartContext } from "pages/_app";
 import React, { useContext } from "react";
 import { TProduct, Unit } from "types";
 
-interface Props {
+export interface IStoreItemProps {
   product: TProduct;
   currencySign: string;
 }
 
-const StoreItem = ({ product, currencySign }: Props) => {
+const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
   console.log("Store Item Render");
 
   const { cartActions } = useContext(CartContext);

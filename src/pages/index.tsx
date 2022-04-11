@@ -6,7 +6,7 @@ import { CartContext, DataContext } from "pages/_app";
 
 import { TCategory, TProduct } from "types";
 
-import StoreItem from "components/StoreItem";
+import StoreItem /*,{ IStoreItemProps }*/ from "components/StoreItem";
 import List from "components/List";
 import SideCartItem from "components/SideCartItem";
 
@@ -31,6 +31,9 @@ const Store: NextPage = () => {
       )),
     [selectedCategory.children]
   );
+
+  // const MemoizedStoreItem = ({ product, currencySign }: IStoreItemProps) =>
+  //   useMemo(() => <StoreItem key={product.id} currencySign={currencySign} product={product} />, [product]);
 
   useEffect(() => {
     let debounce = setTimeout(() => {
@@ -102,6 +105,13 @@ const Store: NextPage = () => {
           <div className="store-widget">
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
             <div className="store-items-wrapper mt-30">
+              {/* {selectedCategory.children?.map((item) => (
+                <MemoizedStoreItem
+                  key={item.id}
+                  currencySign={cartState.currencySign}
+                  product={item}
+                ></MemoizedStoreItem>
+              ))} */}
               {memoizedStoreItems}
               {searchQuery && !selectedCategory?.children?.length ? (
                 <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
