@@ -5,6 +5,7 @@ import { useContext } from "react";
 
 const HeaderMenu = () => {
   const { storeData, searchQuery, setSearchQuery } = useContext(DataContext);
+
   const router = useRouter();
 
   const handleSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
