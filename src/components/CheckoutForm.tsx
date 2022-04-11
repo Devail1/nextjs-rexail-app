@@ -86,7 +86,7 @@ const CheckoutForm = ({ currencySign, cartTotal }: Props) => {
         }}
       >
         {({ isSubmitting, errors, touched }) => (
-          <Form className="checkout-form-wrapper mb-20">
+          <Form noValidate autoComplete="off" className="checkout-form-wrapper mb-20">
             <div className="font-size-16 font-gray-900 text-weight-500">פרטי כרטיס אשראי</div>
             <div className="display-flex align-center justify-between mb-20">
               <div className="display-flex flex-vertical w-2-4">
