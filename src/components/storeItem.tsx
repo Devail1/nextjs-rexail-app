@@ -1,4 +1,4 @@
-import { DataContext } from "pages/_app";
+import { CartContext } from "pages/_app";
 import React, { useContext } from "react";
 import { TProduct, Unit } from "types";
 
@@ -8,9 +8,7 @@ interface Props {
 }
 
 const StoreItem = ({ product, currencySign }: Props) => {
-  const {
-    cartStore: { cartActions },
-  } = useContext(DataContext);
+  const { cartActions } = useContext(CartContext);
 
   let {
     fullName,

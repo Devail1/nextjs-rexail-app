@@ -2,7 +2,7 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import type { GetStaticProps, NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { DataContext } from "pages/_app";
+import { CartContext, DataContext } from "pages/_app";
 
 import { TCategory, TProduct } from "types";
 
@@ -13,12 +13,8 @@ import SideCartItem from "components/SideCartItem";
 const Store: NextPage = () => {
   console.log("Store Page Render");
 
-  const {
-    searchQuery,
-    setSearchQuery,
-    productsData,
-    cartStore: { cartState, cartActions },
-  } = useContext(DataContext);
+  const { cartState, cartActions } = useContext(CartContext);
+  const { searchQuery, setSearchQuery, productsData } = useContext(DataContext);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
@@ -218,10 +214,10 @@ const Store: NextPage = () => {
   );
 };
 
-Store.whyDidYouRender = {
-  logOnDifferentValues: true,
-  customName: "Store",
-};
+// Store.whyDidYouRender = {
+//   logOnDifferentValues: true,
+//   customName: "Store",
+// };
 
 export default Store;
 

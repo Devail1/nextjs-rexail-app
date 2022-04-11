@@ -6,7 +6,7 @@ import type { AppProps } from "next/app";
 
 import { TCategory, TStoreData } from "types";
 
-import { createContext, Dispatch, SetStateAction, useState } from "react";
+import { createContext, Dispatch, SetStateAction, useMemo, useState } from "react";
 import { TCartStore, useCartStore } from "hooks/useCartStore";
 import { formatData } from "utils";
 
@@ -20,12 +20,12 @@ interface MyAppProps extends AppProps {
 export type TDataContextProvider = {
   storeData: TStoreData;
   productsData: TCategory[];
-  cartStore: TCartStore;
   searchQuery: string;
   setSearchQuery: Dispatch<SetStateAction<string>>;
 };
 
 export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
+export const CartContext = createContext<TCartStore>({} as TCartStore);
 
 function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
   console.log("App Rendered");
@@ -34,10 +34,16 @@ function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  const cartStoreValue = useMemo(() => {
+    return cartStore;
+  }, [cartStore]);
+
   return (
-    <DataContext.Provider value={{ storeData, productsData, cartStore, searchQuery, setSearchQuery }}>
+    <DataContext.Provider value={{ storeData, productsData, searchQuery, setSearchQuery }}>
       <Layout>
-        <Component {...pageProps} />
+        <CartContext.Provider value={cartStoreValue}>
+          <Component {...pageProps} />
+        </CartContext.Provider>
       </Layout>
     </DataContext.Provider>
   );
@@ -65,5 +71,10 @@ MyApp.getInitialProps = async (appContext: any) => {
 
   return { ...appProps, ...appData };
 };
+
+// MyApp.whyDidYouRender = {
+//   logOnDifferentValues: true,
+//   customName: "MyApp",
+// };
 
 export default MyApp;
