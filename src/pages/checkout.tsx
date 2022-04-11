@@ -1,12 +1,10 @@
 import { useContext } from "react";
 import { GetStaticProps, NextPage } from "next";
-import { DataContext } from "./_app";
+import { CartContext } from "./_app";
 import CheckoutForm from "components/CheckoutForm";
 
 const Checkout: NextPage = () => {
-  const {
-    cartStore: { cartState },
-  } = useContext(DataContext);
+  const { cartState } = useContext(CartContext);
 
   return (
     <div className="main-bg">

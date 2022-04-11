@@ -1,15 +1,13 @@
 import { useContext, useState } from "react";
 import { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
-import { DataContext } from "./_app";
+import { CartContext } from "./_app";
 import CartItem from "components/CartItem";
 
 const Cart: NextPage = () => {
   const [userComment, setUserComment] = useState("");
 
-  const {
-    cartStore: { cartState, cartActions },
-  } = useContext(DataContext);
+  const { cartState, cartActions } = useContext(CartContext);
 
   const handleUserComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setUserComment(e.target.value);
