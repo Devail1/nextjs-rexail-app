@@ -30,9 +30,9 @@ export const CartContext = createContext<TCartStore>({} as TCartStore);
 function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
   console.log("App Rendered");
 
-  const cartStore = useCartStore();
-
   const [searchQuery, setSearchQuery] = useState("");
+
+  const cartStore = useCartStore();
 
   const cartStoreValue = useMemo(() => {
     return cartStore;

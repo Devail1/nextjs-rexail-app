@@ -8,6 +8,8 @@ interface Props {
 }
 
 const StoreItem = ({ product, currencySign }: Props) => {
+  console.log("Store Item Render");
+
   const { cartActions } = useContext(CartContext);
 
   let {
@@ -23,8 +25,6 @@ const StoreItem = ({ product, currencySign }: Props) => {
     currentRelevancy,
     productQuality,
   } = product;
-
-  console.log("Store Item Render");
 
   return (
     <div className="store-item rounded-10 display-flex flex-vertical align-center justify-around">

@@ -24,7 +24,7 @@ const Store: NextPage = () => {
     }
   }, [productsData]);
 
-  const memoizedStoreItemList = useMemo(
+  const memoizedStoreItems = useMemo(
     () =>
       selectedCategory.children?.map((item) => (
         <StoreItem key={item.id} currencySign={cartState.currencySign} product={item} />
@@ -102,10 +102,7 @@ const Store: NextPage = () => {
           <div className="store-widget">
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
             <div className="store-items-wrapper mt-30">
-              {/* {selectedCategory?.children?.map((item) => {
-                return <StoreItem key={item.id} currencySign={cartState.currencySign} product={item} />;
-              })} */}
-              {memoizedStoreItemList}
+              {memoizedStoreItems}
               {searchQuery && !selectedCategory?.children?.length ? (
                 <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
                   לא נמצאו תוצאות לחיפוש
