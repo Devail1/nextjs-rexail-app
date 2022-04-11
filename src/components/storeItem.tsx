@@ -224,4 +224,9 @@ const StoreItem = ({ product, currencySign }: Props) => {
   );
 };
 
+// StoreItem.whyDidYouRender = {
+//   logOnDifferentValues: true,
+//   customName: "Store",
+// };
+
 export default StoreItem;
