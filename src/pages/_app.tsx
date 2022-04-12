@@ -1,12 +1,14 @@
 import "wdyr";
 
+import axios from "axios";
+
 import "../styles/globals.css";
 import App from "next/app";
 import type { AppProps } from "next/app";
 
 import { TCategory, TStoreData } from "types";
 
-import { createContext, Dispatch, SetStateAction, useMemo, useState } from "react";
+import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { TCartStore, useCartStore } from "hooks/useCartStore";
 import { formatData } from "utils";
 
@@ -53,19 +55,17 @@ MyApp.getInitialProps = async (appContext: any) => {
   // calls page's `getInitialProps` and fills `appProps.pageProps`
   const appProps = await App.getInitialProps(appContext);
 
-  // Call an external API endpoint to get store data.
-  const res1 = await fetch(
+  const response1 = await axios.get(
     "https://test.rexail.co.il/client/public/store/website?domain=testeitan.rexail.co.il"
   );
-  const response1 = await res1.json();
-  const storeData: TStoreData = response1.data;
 
-  // Call an external API endpoint to get products data with json web token.
-  const res2 = await fetch(
+  const storeData: TStoreData = response1.data.data;
+
+  const response2 = await axios.get(
     `https://test.rexail.co.il/client/public/store/catalog?s_jwe=${storeData.jsonWebEncryption}`
   );
-  const response2 = await res2.json();
-  const productsData = formatData(response2.data);
+
+  const productsData = formatData(response2.data.data);
 
   let appData = { storeData, productsData };
 
