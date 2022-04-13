@@ -1,5 +1,6 @@
 import { useContext, useEffect, useMemo, useState } from "react";
 import type { GetStaticProps, NextPage } from "next";
+import { useSelector } from "react-redux";
 import Head from "next/head";
 import Link from "next/link";
 import { CartContext, DataContext } from "pages/_app";
@@ -14,6 +15,7 @@ const Store: NextPage = () => {
   console.log("Store Page Render");
 
   const { cartState, cartActions } = useContext(CartContext);
+
   const { searchQuery, setSearchQuery, productsData } = useContext(DataContext);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
@@ -23,6 +25,23 @@ const Store: NextPage = () => {
       setSelectedCategory(productsData[0]);
     }
   }, [productsData]);
+
+  // useEffect(() => {
+  //   if (cartItems && cartItems.length) {
+  //     let currentCategory = productsData.filter((category) => category.id === selectedCategory.id)[0];
+  //     setSelectedCategory({
+  //       ...selectedCategory,
+  //       children: currentCategory.children?.map((item) => {
+  //         if (cartItems.some((product: TProduct) => product.id === item.id)) {
+  //           let newProduct = cartItems.filter((product: TProduct) => product.id === item.id)[0];
+  //           return newProduct;
+  //         } else {
+  //           return item;
+  //         }
+  //       }),
+  //     });
+  //   }
+  // }, [cartItems]);
 
   const memoizedStoreItems = useMemo(
     () =>

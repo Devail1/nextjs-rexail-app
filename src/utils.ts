@@ -1,5 +1,15 @@
 import { TCategory, TProduct } from "types";
 
+export function calculateTotal(array: TProduct[] = []) {
+  const initialValue = 0;
+  const sumWithInitial = array.reduce(
+    (totalSum: number, product: TProduct) => totalSum + product.price * product.quantity!,
+    initialValue
+  );
+  if (isNaN(sumWithInitial)) return "0.00";
+  return sumWithInitial.toFixed(2);
+}
+
 export function formatData(array: object[]): TCategory[] {
   const IMG_BASE_URL = "https://s3.eu-central-1.amazonaws.com/images-il.rexail.com/";
 

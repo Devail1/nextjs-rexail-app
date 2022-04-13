@@ -1,5 +1,8 @@
+// import { onIncrementQuantity, onDecrementQuantity } from "features/cart/cartSlice";
 import { CartContext } from "pages/_app";
 import React, { useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
+// import { RootState } from "store";
 import { TProduct, Unit } from "types";
 
 export interface IStoreItemProps {
@@ -9,8 +12,11 @@ export interface IStoreItemProps {
 
 const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
   console.log("Store Item Render");
+  const dispatch = useDispatch();
 
   const { cartActions } = useContext(CartContext);
+
+  // const { cartItems } = useSelector((state: RootState) => state.cart);
 
   let {
     fullName,
@@ -122,7 +128,9 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
             <button
               type="button"
               className="add-to-cart-btn"
-              onClick={() => cartActions.onIncreaseProductQuantity(product)}
+              // onClick={() => dispatch(onIncrementQuantity(product))}
+              // onClick={() => cartActions.onIncreaseProductQuantity(product)}
+              onClick={() => dispatch({ type: "product/incremented", payload: product })}
             >
               <img src="/icons/icon-plus.svg" />
               <span className="mr-5 text-weight-500"> הוספה לסל </span>
@@ -132,6 +140,7 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
               <button
                 type="button"
                 className="h-full w-full"
+                // onClick={() => dispatch(onIncrementQuantity(product))}
                 onClick={() => cartActions.onIncreaseProductQuantity(product)}
               >
                 <img src="/icons/icon-plus.svg" />
@@ -140,7 +149,7 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
               <button
                 type="button"
                 className=" h-full w-full"
-                onClick={() => cartActions.onDecreaseProductQuantity(product)}
+                // onClick={() => dispatch(onDecrementQuantity(product))}
               >
                 <img className="mb-4" src="/icons/icon-minus.svg" />
               </button>
