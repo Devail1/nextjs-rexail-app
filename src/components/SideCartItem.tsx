@@ -90,8 +90,13 @@ const SideCartItem = ({ product, currencySign }: Props) => {
                   return (
                     <li
                       key={productSellingUnit.id}
-                      // onClick={() => cartActions.onUnitTypeChange(product, productSellingUnit)}
                       className="dropdown-item"
+                      onClick={() =>
+                        dispatch({
+                          type: "product/unitTypeSelected",
+                          payload: { product, productSellingUnit },
+                        })
+                      }
                     >
                       <a>{productSellingUnit.sellingUnit.name} </a>
                     </li>

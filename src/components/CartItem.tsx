@@ -106,6 +106,12 @@ const CartItem = ({ product, cartItemsLength, index, currencySign }: Props) => {
               </svg>
               <select
                 // onChange={(e) => cartActions.onProductCommentSelect(product, e.target.value)}
+                onChange={(e) =>
+                  dispatch({
+                    type: "product/commentSelected",
+                    payload: { product: product, commentID: e.target.value },
+                  })
+                }
                 className={
                   product.comment
                     ? "border-green select-unit c-p mt-10 rounded-25 w-full display-flex align-center justify-between"
@@ -114,11 +120,7 @@ const CartItem = ({ product, cartItemsLength, index, currencySign }: Props) => {
               >
                 <option value="">{product.commentType.name}</option>
                 {product.commentType.comments.map((comment) => {
-                  return (
-                    <option key={comment.id} value={comment.id}>
-                      {comment.name}
-                    </option>
-                  );
+                  return <option key={comment.id} label={comment.name} value={comment.id} />;
                 })}
               </select>
               <svg
@@ -206,7 +208,12 @@ const CartItem = ({ product, cartItemsLength, index, currencySign }: Props) => {
                     return (
                       <li
                         key={productSellingUnit.id}
-                        // onClick={() => cartActions.onUnitTypeChange(product, productSellingUnit)}
+                        onClick={() =>
+                          dispatch({
+                            type: "product/unitTypeSelected",
+                            payload: { product, productSellingUnit },
+                          })
+                        }
                         className="dropdown-item"
                       >
                         <a>{productSellingUnit.sellingUnit.name} </a>

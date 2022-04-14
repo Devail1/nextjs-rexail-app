@@ -114,7 +114,6 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
                             payload: { product, productSellingUnit },
                           })
                         }
-                        // onClick={() => cartActions.onUnitTypeChange(product, productSellingUnit)}
                       >
                         {productSellingUnit.sellingUnit.name}
                       </button>
