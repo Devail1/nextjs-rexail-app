@@ -1,10 +1,11 @@
-import { useContext } from "react";
 import { GetStaticProps, NextPage } from "next";
-import { CartContext } from "./_app";
 import CheckoutForm from "components/CheckoutForm";
+import { useSelector } from "react-redux";
 
 const Checkout: NextPage = () => {
-  const { cartState } = useContext(CartContext);
+  const store = useSelector((state: any) => state);
+  const { cartTotal } = store.cart;
+  const { currencySign } = store.config;
 
   return (
     <div className="main-bg">
@@ -60,10 +61,7 @@ const Checkout: NextPage = () => {
                   <span>ללא תשלום</span>
                 </button>
               </div>
-              <CheckoutForm
-                currencySign={cartState.currencySign}
-                cartTotal={cartState.cartTotal}
-              ></CheckoutForm>
+              <CheckoutForm currencySign={currencySign} cartTotal={cartTotal}></CheckoutForm>
             </div>
           </div>
           <div className="order-summary rounded-10">
@@ -120,29 +118,29 @@ const Checkout: NextPage = () => {
             <div className="display-flex justify-between align-center mt-25">
               <span className="font-size-15 font-gray-600">סה״כ סל קניות</span>
               <span className="font-size-16 font-heebo">
-                {cartState.currencySign}
-                {cartState.cartTotal}
+                {currencySign}
+                {cartTotal}
               </span>
             </div>
             <div className="display-flex justify-between align-center my-6">
               <span className="font-size-15 font-gray-600">הנחת קופון</span>
               <span className="font-size-16 font-heebo">
-                {cartState.currencySign}
+                {currencySign}
                 60.00-
               </span>
             </div>
             <div className="display-flex justify-between align-center my-6">
               <span className="font-size-15 font-gray-600">משלוח</span>
               <span className="font-size-16 font-heebo">
-                {cartState.currencySign}
+                {currencySign}
                 30.00
               </span>
             </div>
             <div className="display-flex justify-between align-center my-6">
               <span className="font-size-15 font-gray-600 text-weight-500">סה״כ לתשלום</span>
               <span className="font-size-16 font-heebo text-weight-500">
-                {cartState.currencySign}
-                {parseFloat(cartState.cartTotal) + 30}
+                {currencySign}
+                {parseFloat(cartTotal) + 30}
               </span>
             </div>
             <div className="text-center">
