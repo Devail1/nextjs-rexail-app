@@ -105,8 +105,6 @@ const SideCartItem = ({ product, currencySign }: Props) => {
           type="button"
           className="plus-minus-preview-container"
           onClick={() => dispatch({ type: "product/decremented", payload: product })}
-
-          // onClick={() => cartActions.onDecreaseProductQuantity(product)}
         >
           <img className="h-8 w-8" src="/icons/icon-minus.svg" />
         </button>

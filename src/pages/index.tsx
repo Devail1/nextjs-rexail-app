@@ -213,10 +213,10 @@ const Store: NextPage = () => {
   );
 };
 
-// Store.whyDidYouRender = {
-//   logOnDifferentValues: true,
-//   customName: "Store",
-// };
+Store.whyDidYouRender = {
+  logOnDifferentValues: true,
+  customName: "Store",
+};
 
 export default Store;
 

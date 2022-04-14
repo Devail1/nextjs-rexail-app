@@ -108,6 +108,12 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
                       <button
                         className="h-full"
                         type="button"
+                        onClick={() =>
+                          dispatch({
+                            type: "product/unitTypeSelected",
+                            payload: { product, productSellingUnit },
+                          })
+                        }
                         // onClick={() => cartActions.onUnitTypeChange(product, productSellingUnit)}
                       >
                         {productSellingUnit.sellingUnit.name}
