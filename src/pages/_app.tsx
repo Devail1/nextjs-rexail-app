@@ -6,7 +6,13 @@ import "../styles/globals.css";
 import App from "next/app";
 import type { AppProps } from "next/app";
 
-import React, { useEffect, useState } from "react";
+import React, {
+  ReducerAction,
+  ReducerStateWithoutAction,
+  ReducerWithoutAction,
+  useEffect,
+  useState,
+} from "react";
 import { createStore, combineReducers } from "redux";
 import { Provider, useDispatch } from "react-redux";
 
@@ -25,19 +31,6 @@ interface MyAppProps extends AppProps {
   productsCatalog: TCategory[];
 }
 
-const AppWrapper = ({ productsCatalog, storeDetails, children }: any) => {
-  const dispatch = useDispatch();
-
-  const initReduxStore = () => {
-    dispatch({ type: "productsCatalog/saveStoreProducts", payload: productsCatalog });
-    dispatch({ type: "storeDetails/saveStoreDetails", payload: storeDetails });
-  };
-
-  initReduxStore();
-
-  return <div>{children};</div>;
-};
-
 function MyApp({ Component, pageProps, storeDetails, productsCatalog }: MyAppProps) {
   console.log("App Rendered");
 
@@ -55,16 +48,16 @@ function MyApp({ Component, pageProps, storeDetails, productsCatalog }: MyAppPro
     const composeEnhancers =
       (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__();
 
-    setStore(createStore(rootReducer, composeEnhancers));
+    setStore(
+      createStore(rootReducer, { products: productsCatalog, store: storeDetails } as {}, composeEnhancers)
+    );
   }, []);
 
   return (
     <Provider store={store}>
-      <AppWrapper productsCatalog={productsCatalog} storeDetails={storeDetails}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </AppWrapper>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </Provider>
   );
 }

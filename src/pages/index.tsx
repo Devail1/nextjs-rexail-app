@@ -104,7 +104,7 @@ const Store: NextPage = () => {
           <div className="store-widget">
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
             <div className="store-items-wrapper mt-30">
-              {selectedCategory.children?.map((item) => (
+              {selectedCategory?.children?.map((item) => (
                 <StoreItem key={item.id} currencySign={currencySign} product={item} />
               ))}
               {searchQuery && !selectedCategory?.children?.length ? (
