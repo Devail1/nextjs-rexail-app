@@ -1,13 +1,16 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { GetStaticProps, NextPage } from "next";
 import Link from "next/link";
-import { CartContext } from "./_app";
 import CartItem from "components/CartItem";
+import { useSelector } from "react-redux";
+import { TProduct } from "types";
 
 const Cart: NextPage = () => {
   const [userComment, setUserComment] = useState("");
 
-  const { cartState, cartActions } = useContext(CartContext);
+  const store = useSelector((state: any) => state);
+  const { cartItems, cartTotal } = store.cart;
+  const { currencySign } = store.config;
 
   const handleUserComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setUserComment(e.target.value);
@@ -15,8 +18,8 @@ const Cart: NextPage = () => {
 
   const onCartSubmit = () => {
     return (
-      cartState.cartItems.filter((product) => product.commentType).length !==
-      cartState.cartItems.filter((product) => product.commentType && product.comment).length
+      cartItems.filter((product: TProduct) => product.commentType).length !==
+      cartItems.filter((product: TProduct) => product.commentType && product.comment).length
     );
   };
 
@@ -45,7 +48,7 @@ const Cart: NextPage = () => {
         </svg>
         <div className="display-flex justify-between align-center mb-10">
           <div className="display-flex font-white align-center">
-            <span className="items-count">{cartState.cartItems.length}</span>
+            <span className="items-count">{cartItems.length}</span>
             <img src="/icons/icon-basket-white.svg" />
             <div className="text-title font-blue mr-5 mt-15 mb-5">סל הקניות שלי</div>
           </div>
@@ -68,7 +71,7 @@ const Cart: NextPage = () => {
               </div>
             </div>
             <ul id="cart-items-container">
-              {!cartState.cartItems.length ? (
+              {!cartItems.length ? (
                 <div className="display-flex flex-vertical align-center py-20 ">
                   <img src="/images/empty-basket.png" />
                   <span className="mt-10 font-size-22 font-blue text-weight-700 font-heebo">
@@ -77,15 +80,14 @@ const Cart: NextPage = () => {
                   <span className="font-blue font-size-18 mt-5">חזרו לחנות כדי להוסיף מוצרים</span>
                 </div>
               ) : (
-                cartState.cartItems.map((item, idx) => {
+                cartItems.map((item: TProduct, idx: number) => {
                   return (
                     <CartItem
                       key={item.id}
                       index={idx}
-                      cartItemsLength={cartState.cartItems.length - 1}
-                      currencySign={cartState.currencySign}
+                      cartItemsLength={cartItems.length - 1}
+                      currencySign={currencySign}
                       product={item}
-                      cartActions={cartActions}
                     />
                   );
                 })
@@ -118,17 +120,17 @@ const Cart: NextPage = () => {
               <div className="display-flex justify-between">
                 <span className="mobile-hide font-gray-900">סה"כ סל קניות </span>
                 <span className="mobile-hide item-price font-size-16">
-                  {cartState.currencySign}
-                  {cartState.cartTotal}
+                  {currencySign}
+                  {cartTotal}
                 </span>
               </div>
               <div className="display-flex flex-vertical align-center mt-20">
                 <button
                   className="mobile-hide h-45 btn-green rounded-10 border-light-gray"
-                  disabled={!cartState.cartItems.length || userComment.length < 3 || onCartSubmit()}
+                  disabled={!cartItems.length || userComment.length < 3 || onCartSubmit()}
                 >
                   <span className="mobile-hide font-white font-size-18 text-weight-500 mx-auto my-auto">
-                    {!cartState.cartItems.length || userComment.length < 3 || onCartSubmit() ? (
+                    {!cartItems.length || userComment.length < 3 || onCartSubmit() ? (
                       <a>המשך לתשלום</a>
                     ) : (
                       <Link href="/checkout">
@@ -150,8 +152,8 @@ const Cart: NextPage = () => {
         <button type="button" id="submit-cart-btn" className="btn-green rounded-50 w-full mb-15">
           <span className="font-white text-xl checkout-text">המשך לתשלום</span>
           <span className="font-white text-xl total-sum">
-            {cartState.currencySign}
-            {cartState.cartTotal}
+            {currencySign}
+            {cartTotal}
           </span>
         </button>
         <span className="font-darkgray text-lgr"> שערוך. עלות סופית לפני שקילה. </span>

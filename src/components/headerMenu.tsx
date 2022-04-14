@@ -1,15 +1,17 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { DataContext } from "pages/_app";
-import { useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const HeaderMenu = () => {
-  const { storeDetails, searchQuery, setSearchQuery } = useContext(DataContext);
+  const store = useSelector((state: any) => state);
+  const storeDetails = store.storeDetails;
+  const searchQuery = store.search;
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    dispatch({ type: "searchQuery/setSearchQuery", payload: e.target.value });
   };
 
   return (

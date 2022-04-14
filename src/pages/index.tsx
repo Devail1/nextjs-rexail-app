@@ -1,32 +1,28 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { GetStaticProps, NextPage } from "next";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Head from "next/head";
 import Link from "next/link";
-import { CartContext, DataContext } from "pages/_app";
 
 import { TCategory, TProduct } from "types";
 
-import StoreItem /*,{ IStoreItemProps }*/ from "components/StoreItem";
+import StoreItem from "components/StoreItem";
 import List from "components/List";
 import SideCartItem from "components/SideCartItem";
-import { TCartState } from "hooks/useCartStore";
 
 const Store: NextPage = () => {
   console.log("Store Page Render");
 
-  const store = useSelector((state: TCartState) => state);
-  console.log("file: index.tsx ~ line 19 ~ store", store);
+  const store = useSelector((state: any) => state);
 
-  const { cartState, cartActions } = useContext(CartContext);
+  const dispatch = useDispatch();
 
-  // const [cartItems, _] = useState(store.cartItems);
-  // console.log("file: index.tsx ~ line 23 ~ cartItems", cartItems);
-
-  const { searchQuery, setSearchQuery, productsCatalog } = useContext(DataContext);
+  const productsCatalog = store.products;
+  const { cartItems, cartTotal } = store.cart;
+  const { currencySign } = store.config;
+  const searchQuery = store.search;
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
-  console.log("file: index.tsx ~ line 27 ~ selectedCategory", selectedCategory);
 
   useEffect(() => {
     if (productsCatalog) {
@@ -34,48 +30,18 @@ const Store: NextPage = () => {
     }
   }, [productsCatalog]);
 
-  // useEffect(() => {
-  //   if (selectedCategory.children) {
-  //     if (cartItems.length) {
-  //       let currentCategory = productsCatalog.filter((category) => category.id === selectedCategory.id)[0]!;
-  //       console.log("setting selected category new children");
-
-  //       setSelectedCategory({
-  //         ...selectedCategory,
-  //         children: currentCategory.children?.map((item) => {
-  //           if (cartItems.some((product: TProduct) => product.id === item.id)) {
-  //             let newProduct = cartItems.filter((product: TProduct) => product.id === item.id)[0];
-  //             return newProduct;
-  //           } else {
-  //             return item;
-  //           }
-  //         }),
-  //       });
-  //     } else {
-  //       setSelectedCategory({
-  //         ...selectedCategory,
-  //         children: productsCatalog.filter((category) => category.id === selectedCategory.id)[0].children,
-  //       });
-  //     }
-  //   }
-  // }, [cartItems, cartItems.length]);
-
-  const memoizedStoreItems = useMemo(
-    () =>
-      selectedCategory.children?.map((item) => (
-        <StoreItem key={item.id} currencySign={cartState.currencySign} product={item} />
-      )),
-    [selectedCategory.children]
-  );
-
   useEffect(() => {
     let debounce = setTimeout(() => {
       if (selectedCategory.children) {
-        let currentCategory = productsCatalog.filter((category) => category.id === selectedCategory.id)[0];
+        let currentCategory = productsCatalog.filter(
+          (category: TCategory) => category.id === selectedCategory.id
+        )[0];
         if (searchQuery.length >= 3) {
           setSelectedCategory({
             ...selectedCategory,
-            children: currentCategory.children?.filter((product) => product.fullName.includes(searchQuery)),
+            children: currentCategory.children?.filter((product: TProduct) =>
+              product.fullName.includes(searchQuery)
+            ),
           });
         } else {
           setSelectedCategory(currentCategory);
@@ -87,7 +53,7 @@ const Store: NextPage = () => {
 
   const handleCategoryClick = (item: TCategory) => {
     setSelectedCategory(item);
-    setSearchQuery("");
+    dispatch({ type: "searchQuery/setSearchQuery", payload: "" });
   };
 
   return (
@@ -138,7 +104,9 @@ const Store: NextPage = () => {
           <div className="store-widget">
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
             <div className="store-items-wrapper mt-30">
-              {memoizedStoreItems}
+              {selectedCategory.children?.map((item) => (
+                <StoreItem key={item.id} currencySign={currencySign} product={item} />
+              ))}
               {searchQuery && !selectedCategory?.children?.length ? (
                 <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
                   לא נמצאו תוצאות לחיפוש
@@ -153,23 +121,21 @@ const Store: NextPage = () => {
               <div className="cart-preview-header display-flex align-center px-16">
                 <img className="w-22 h-22 ml-10" src="/icons/button-arrow-up.svg" />
                 <img className="icon-basket" src="/icons/icon-basket-green.svg" />
-                <span className="text-sm font-white mt-8 cart-preview-items-count">
-                  {cartState.cartItems.length}
-                </span>
+                <span className="text-sm font-white mt-8 cart-preview-items-count">{cartItems.length}</span>
                 <div className="display-flex flex-vertical font-white mr-8 ml-auto">
                   <span className="text-weight-300 font-size-14">סל הקניות שלי</span>
                   <span className="font-size-18">
-                    {cartState.currencySign}
-                    {cartState.cartTotal}
+                    {currencySign}
+                    {cartTotal}
                   </span>
                 </div>
                 <button
                   type="button"
                   className="proceed-to-checkout-btn font-white font-size-16"
-                  disabled={!cartState.cartItems.length}
+                  disabled={!cartItems.length}
                 >
                   <span>
-                    {!cartState.cartItems.length ? (
+                    {!cartItems.length ? (
                       <a>המשך לתשלום</a>
                     ) : (
                       <Link href="/cart">
@@ -183,14 +149,14 @@ const Store: NextPage = () => {
                 <button
                   type="button"
                   className="c-p display-flex align-center h-full w-85 mr-auto"
-                  onClick={cartActions.onClearCart}
+                  onClick={() => dispatch({ type: "cart/cleared" })}
                 >
                   <img src="/icons/icon-trash.svg" />
                   <span className="mr-5 font-size-14"> מחיקת סל </span>
                 </button>
               </div>
               <div className="cart-items-preview-wrapper">
-                {!cartState.cartItems.length ? (
+                {!cartItems.length ? (
                   <div className="display-flex flex-vertical align-center pt-20">
                     <img src="/images/empty-basket.png" />
                     <span className="mt-10 font-size-22 font-blue text-weight-700 font-heebo">
@@ -200,24 +166,24 @@ const Store: NextPage = () => {
                   </div>
                 ) : (
                   <List<TProduct>
-                    items={cartState.cartItems}
+                    items={cartItems}
                     renderItem={(item) => (
-                      <SideCartItem key={item.id} currencySign={cartState.currencySign} product={item} />
+                      <SideCartItem key={item.id} currencySign={currencySign} product={item} />
                     )}
                   />
                 )}
               </div>
               <div className="cart-preview-footer px-28 display-flex flex-vertical align-center justify-center">
-                <button type="button" className="btn-green w-full" disabled={!cartState.cartItems.length}>
-                  {!cartState.cartItems.length ? (
+                <button type="button" className="btn-green w-full" disabled={!cartItems.length}>
+                  {!cartItems.length ? (
                     <a className="w-full h-full">
                       <div className="display-flex align-center justify-between h-full">
                         <span className="font-heebo text-weight-500 font-white checkout-text">
                           המשך לתשלום
                         </span>
                         <span className="font-heebo text-weight-500 font-white total-sum">
-                          {cartState.currencySign}
-                          {cartState.cartTotal}
+                          {currencySign}
+                          {cartTotal}
                         </span>
                       </div>
                     </a>
@@ -229,8 +195,8 @@ const Store: NextPage = () => {
                             המשך לתשלום
                           </span>
                           <span className="font-heebo text-weight-500 font-white total-sum">
-                            {cartState.currencySign}
-                            {cartState.cartTotal}
+                            {currencySign}
+                            {cartTotal}
                           </span>
                         </div>
                       </a>

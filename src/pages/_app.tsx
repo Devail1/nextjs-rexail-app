@@ -6,39 +6,24 @@ import "../styles/globals.css";
 import App from "next/app";
 import type { AppProps } from "next/app";
 
-import { TCategory, TstoreDetails } from "types";
-
-import React, {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { TCartStore, useCartStore } from "hooks/useCartStore";
-import { formatData } from "utils";
+import React, { useEffect, useState } from "react";
 import { createStore, combineReducers } from "redux";
-import { cartReducer } from "features/cart/cartSlice";
-import Layout from "components/Layout";
-import { productsCatalogReducer } from "features/productsCatalog/productsCatalogSlice";
 import { Provider, useDispatch } from "react-redux";
+
+import { cartReducer } from "features/cart/cartSlice";
+import { productsCatalogReducer } from "features/productsCatalog/productsCatalogSlice";
 import { storeDetailsReducer } from "features/storeDetails/storeDetailsSlice";
+import { searchQueryReducer } from "features/searchQuery/searchQuerySlice";
+import { configReducer } from "features/config/configSlice";
+
+import { TCategory, TstoreDetails } from "types";
+import { formatData } from "utils";
+
+import Layout from "components/Layout";
 interface MyAppProps extends AppProps {
   storeDetails: TstoreDetails;
   productsCatalog: TCategory[];
 }
-
-export type TDataContextProvider = {
-  storeDetails: TstoreDetails;
-  productsCatalog: TCategory[];
-  searchQuery: string;
-  setSearchQuery: Dispatch<SetStateAction<string>>;
-};
-
-export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
-export const CartContext = createContext<TCartStore>({} as TCartStore);
 
 const AppWrapper = ({ productsCatalog, storeDetails, children }: any) => {
   const dispatch = useDispatch();
@@ -60,7 +45,10 @@ function MyApp({ Component, pageProps, storeDetails, productsCatalog }: MyAppPro
     cart: cartReducer,
     products: productsCatalogReducer,
     store: storeDetailsReducer,
+    search: searchQueryReducer,
+    config: configReducer,
   });
+
   const [store, setStore] = useState(createStore(rootReducer));
 
   useEffect(() => {
@@ -70,24 +58,12 @@ function MyApp({ Component, pageProps, storeDetails, productsCatalog }: MyAppPro
     setStore(createStore(rootReducer, composeEnhancers));
   }, []);
 
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const cartStore = useCartStore();
-
-  const cartStoreValue = useMemo(() => {
-    return cartStore;
-  }, [cartStore]);
-
   return (
     <Provider store={store}>
       <AppWrapper productsCatalog={productsCatalog} storeDetails={storeDetails}>
-        <DataContext.Provider value={{ storeDetails, productsCatalog, searchQuery, setSearchQuery }}>
-          <Layout>
-            <CartContext.Provider value={cartStoreValue}>
-              <Component {...pageProps} />
-            </CartContext.Provider>
-          </Layout>
-        </DataContext.Provider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </AppWrapper>
     </Provider>
   );
