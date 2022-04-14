@@ -32,8 +32,6 @@ interface MyAppProps extends AppProps {
 }
 
 function MyApp({ Component, pageProps, storeDetails, productsCatalog }: MyAppProps) {
-  console.log("App Rendered");
-
   const rootReducer = combineReducers({
     cart: cartReducer,
     products: productsCatalogReducer,

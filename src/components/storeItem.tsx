@@ -8,8 +8,6 @@ export interface IStoreItemProps {
 }
 
 const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
-  console.log("Store Item Render");
-
   const dispatch = useDispatch();
 
   let {

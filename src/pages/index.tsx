@@ -11,8 +11,6 @@ import List from "components/List";
 import SideCartItem from "components/SideCartItem";
 
 const Store: NextPage = () => {
-  console.log("Store Page Render");
-
   const store = useSelector((state: any) => state);
 
   const dispatch = useDispatch();
