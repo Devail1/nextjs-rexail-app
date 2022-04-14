@@ -1,6 +1,8 @@
 import { TCategory, TProduct } from "types";
 
-export function calculateTotal(array: TProduct[] = []) {
+export function calculateTotal(array: TProduct[]) {
+  console.log("file: utils.ts ~ line 4 ~ calculateTotal ~ array", array);
+  if (!array.length) return "0.00";
   const initialValue = 0;
   const sumWithInitial = array.reduce(
     (totalSum: number, product: TProduct) => totalSum + product.price * product.quantity!,

@@ -1,4 +1,3 @@
-import { createStore } from "redux";
 import { TProduct } from "types";
 import { calculateTotal } from "utils";
 
@@ -39,23 +38,36 @@ type PayloadAction = {
 export function cartReducer(state = initialState, action: PayloadAction) {
   switch (action.type) {
     case "product/incremented":
-      const product = { ...action.payload };
-      let newState = { ...state };
-      if (!newState.cartItems.some((item) => item.id === product.id)) {
-        product.quantity = product.primaryQuantityUnit!.sellingUnit.amountJumps;
-        newState.cartItems.unshift(product);
+      // const product = { ...action.payload };
+      // let newState = { ...state };
+      if (!state.cartItems.some((item) => item.id === action.payload.id)) {
+        action.payload.quantity = action.payload.primaryQuantityUnit!.sellingUnit.amountJumps;
+        state.cartItems.unshift(action.payload);
       } else {
-        const newProduct = newState.cartItems.filter((item) => item.id === product.id)[0];
-        newState.cartItems = newState.cartItems.filter((item) => item.id !== product.id);
+        const newProduct = state.cartItems.filter((item) => item.id === action.payload.id)[0];
+        state.cartItems = state.cartItems.filter((item) => item.id !== action.payload.id);
         newProduct.quantity = newProduct.quantity! + newProduct.primaryQuantityUnit.sellingUnit.amountJumps;
-        newState.cartItems.unshift(newProduct);
+        state.cartItems.unshift(newProduct);
       }
-      newState.cartTotal = calculateTotal(newState.cartItems);
+      state.cartTotal = calculateTotal(state.cartItems);
 
-      return newState;
+      return state;
 
     case "product/decremented":
+      // const product = { ...action.payload };
+      // const product = newState.cartItems.filter((item) => item.id === product.id)[0];
+      if (action.payload.quantity! > action.payload.primaryQuantityUnit.sellingUnit.amountJumps) {
+        state.cartItems = state.cartItems.filter((item) => item.id !== action.payload.id);
+        action.payload.quantity =
+          action.payload.quantity! - action.payload.primaryQuantityUnit.sellingUnit.amountJumps;
+        state.cartItems.unshift(action.payload);
+      } else {
+        state.cartItems = state.cartItems.filter((item) => item.id !== action.payload.id);
+      }
+      console.log("file: cartSlice.ts ~ line 67 ~ cartReducer ~ state.cartItems", state.cartItems);
+      state.cartTotal = calculateTotal(state.cartItems);
       return state;
+
     default:
       return state;
   }

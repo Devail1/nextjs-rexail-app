@@ -10,38 +10,55 @@ import { TCategory, TProduct } from "types";
 import StoreItem /*,{ IStoreItemProps }*/ from "components/StoreItem";
 import List from "components/List";
 import SideCartItem from "components/SideCartItem";
+import { TCartState } from "hooks/useCartStore";
 
 const Store: NextPage = () => {
   console.log("Store Page Render");
 
+  const store = useSelector((state: TCartState) => state);
+  console.log("file: index.tsx ~ line 19 ~ store", store);
+
   const { cartState, cartActions } = useContext(CartContext);
 
-  const { searchQuery, setSearchQuery, productsData } = useContext(DataContext);
+  // const [cartItems, _] = useState(store.cartItems);
+  // console.log("file: index.tsx ~ line 23 ~ cartItems", cartItems);
+
+  const { searchQuery, setSearchQuery, productsCatalog } = useContext(DataContext);
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
+  console.log("file: index.tsx ~ line 27 ~ selectedCategory", selectedCategory);
 
   useEffect(() => {
-    if (productsData) {
-      setSelectedCategory(productsData[0]);
+    if (productsCatalog) {
+      setSelectedCategory(productsCatalog[0]);
     }
-  }, [productsData]);
+  }, [productsCatalog]);
 
   // useEffect(() => {
-  //   if (cartItems && cartItems.length) {
-  //     let currentCategory = productsData.filter((category) => category.id === selectedCategory.id)[0];
-  //     setSelectedCategory({
-  //       ...selectedCategory,
-  //       children: currentCategory.children?.map((item) => {
-  //         if (cartItems.some((product: TProduct) => product.id === item.id)) {
-  //           let newProduct = cartItems.filter((product: TProduct) => product.id === item.id)[0];
-  //           return newProduct;
-  //         } else {
-  //           return item;
-  //         }
-  //       }),
-  //     });
+  //   if (selectedCategory.children) {
+  //     if (cartItems.length) {
+  //       let currentCategory = productsCatalog.filter((category) => category.id === selectedCategory.id)[0]!;
+  //       console.log("setting selected category new children");
+
+  //       setSelectedCategory({
+  //         ...selectedCategory,
+  //         children: currentCategory.children?.map((item) => {
+  //           if (cartItems.some((product: TProduct) => product.id === item.id)) {
+  //             let newProduct = cartItems.filter((product: TProduct) => product.id === item.id)[0];
+  //             return newProduct;
+  //           } else {
+  //             return item;
+  //           }
+  //         }),
+  //       });
+  //     } else {
+  //       setSelectedCategory({
+  //         ...selectedCategory,
+  //         children: productsCatalog.filter((category) => category.id === selectedCategory.id)[0].children,
+  //       });
+  //     }
   //   }
-  // }, [cartItems]);
+  // }, [cartItems, cartItems.length]);
 
   const memoizedStoreItems = useMemo(
     () =>
@@ -51,13 +68,10 @@ const Store: NextPage = () => {
     [selectedCategory.children]
   );
 
-  // const MemoizedStoreItem = ({ product, currencySign }: IStoreItemProps) =>
-  //   useMemo(() => <StoreItem key={product.id} currencySign={currencySign} product={product} />, [product]);
-
   useEffect(() => {
     let debounce = setTimeout(() => {
       if (selectedCategory.children) {
-        let currentCategory = productsData.filter((category) => category.id === selectedCategory.id)[0];
+        let currentCategory = productsCatalog.filter((category) => category.id === selectedCategory.id)[0];
         if (searchQuery.length >= 3) {
           setSelectedCategory({
             ...selectedCategory,
@@ -86,7 +100,7 @@ const Store: NextPage = () => {
       <nav id="categories" className="categories-wrapper">
         <ul className="container mx-auto h-full display-flex align-center justify-evenly font-gray-900">
           <List<TCategory>
-            items={productsData?.slice(0, 10)}
+            items={productsCatalog?.slice(0, 10)}
             renderItem={(item) => (
               <li
                 key={item.id}
@@ -98,12 +112,12 @@ const Store: NextPage = () => {
               </li>
             )}
           />
-          {productsData.length > 10 ? (
+          {productsCatalog.length > 10 ? (
             <ul className="category show-more-categories">
               <span>עוד</span>
               <ul className="categories-show-more display-flex flex-vertical absolute pt-10 rounded-10">
                 <List<TCategory>
-                  items={productsData?.slice(10, productsData.length)}
+                  items={productsCatalog?.slice(10, productsCatalog.length)}
                   renderItem={(item) => (
                     <li key={item.id} className="category show-more">
                       <button type="button" onClick={() => handleCategoryClick(item)}>

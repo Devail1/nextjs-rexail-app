@@ -141,7 +141,7 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
                 type="button"
                 className="h-full w-full"
                 // onClick={() => dispatch(onIncrementQuantity(product))}
-                onClick={() => cartActions.onIncreaseProductQuantity(product)}
+                onClick={() => dispatch({ type: "product/incremented", payload: product })}
               >
                 <img src="/icons/icon-plus.svg" />
               </button>
@@ -149,6 +149,7 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
               <button
                 type="button"
                 className=" h-full w-full"
+                onClick={() => dispatch({ type: "product/decremented", payload: product })}
                 // onClick={() => dispatch(onDecrementQuantity(product))}
               >
                 <img className="mb-4" src="/icons/icon-minus.svg" />
