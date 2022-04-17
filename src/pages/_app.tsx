@@ -38,12 +38,12 @@ function MyApp({ Component, pageProps, storeDetails, productsCatalog }: MyAppPro
 
   const memoizedProductsCatalog = useMemo(() => productsCatalog, []);
 
-  let initialStoreState = {
-    products: memoizedProductsCatalog,
-    store: storeDetails,
-  } as object;
-
   useEffect(() => {
+    let initialStoreState = {
+      products: memoizedProductsCatalog,
+      store: storeDetails,
+    } as object;
+
     const composeEnhancers =
       (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__();
 

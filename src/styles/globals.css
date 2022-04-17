@@ -77,10 +77,7 @@ html,
 body {
   height: 100%;
 }
-body::-webkit-scrollbar {
-  width: 0; /* Remove scrollbar space */
-  background: transparent; /* Optional: just make scrollbar invisible */
-}
+
 .bg {
   background-color: #eef1ef;
 }
@@ -1032,7 +1029,7 @@ button:disabled {
 }
 
 .overflow-visible {
-  overflow: visible;
+  overflow: visible !important;
 }
 
 .not-active {

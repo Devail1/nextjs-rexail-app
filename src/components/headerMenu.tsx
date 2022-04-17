@@ -3,9 +3,10 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 
 const HeaderMenu = () => {
+  const router = useRouter();
+
   const { store: storeDetails, searchQuery } = useSelector((state: any) => state);
 
-  const router = useRouter();
   const dispatch = useDispatch();
 
   const handleSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {

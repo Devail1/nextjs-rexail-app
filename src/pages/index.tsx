@@ -14,22 +14,19 @@ import List from "components/List";
 import SideCartItem from "components/SideCartItem";
 
 const Store: NextPage = () => {
-  const store = useSelector((state: any) => state);
-
-  const dispatch = useDispatch();
-
   const {
+    search: searchQuery,
     products: productsCatalog,
     cart: { cartItems, cartTotal },
     config: { currencySign },
   } = useSelector((state: any) => state);
 
-  const searchQuery = store.search;
+  const dispatch = useDispatch();
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
-  const [isSortDropdownToggled, setIsSortDropdownToggled] = useState(false);
   const [selectedSortBy, setSelectedSortBy] = useState<string>("");
+  const [isSortDropdownToggled, setIsSortDropdownToggled] = useState(false);
 
   useEffect(() => {
     if (productsCatalog) {
@@ -58,11 +55,16 @@ const Store: NextPage = () => {
     return () => clearTimeout(debounce);
   }, [searchQuery]);
 
-  const handleCategoryClick = useCallback((item: TCategory) => {
-    setSelectedCategory(item);
-    dispatch({ type: "searchQuery/setSearchQuery", payload: "" });
-    setSelectedSortBy("");
-  }, []);
+  const handleCategoryClick = useCallback(
+    (item: TCategory) => {
+      setSelectedCategory(item);
+
+      // If search input and sortBy values exists; set initial state
+      if (searchQuery) dispatch({ type: "searchQuery/setSearchQuery", payload: "" });
+      if (selectedSortBy) setSelectedSortBy("");
+    },
+    [selectedCategory]
+  );
 
   const handleSortByClick = useCallback(
     (value: string) => {
