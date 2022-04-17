@@ -61,6 +61,7 @@ const Store: NextPage = () => {
   const handleCategoryClick = useCallback((item: TCategory) => {
     setSelectedCategory(item);
     dispatch({ type: "searchQuery/setSearchQuery", payload: "" });
+    setSelectedSortBy("");
   }, []);
 
   const handleSortByClick = useCallback(
