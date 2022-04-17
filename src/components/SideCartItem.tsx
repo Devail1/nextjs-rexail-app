@@ -31,7 +31,7 @@ const SideCartItem = ({ product, currencySign }: Props) => {
         )}
         <button
           type="button"
-          className="cart-preview-btn"
+          className="side-cart-btn"
           onClick={() => dispatch({ type: "product/removed", payload: product })}
         >
           <svg
