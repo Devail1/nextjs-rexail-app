@@ -33,8 +33,6 @@ const SideCartItem = ({ product, currencySign }: Props) => {
           type="button"
           className="cart-preview-btn"
           onClick={() => dispatch({ type: "product/removed", payload: product })}
-
-          // onClick={() => cartActions.onRemoveProduct(product)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +57,6 @@ const SideCartItem = ({ product, currencySign }: Props) => {
           type="button"
           className="plus-minus-preview-container"
           onClick={() => dispatch({ type: "product/incremented", payload: product })}
-          // onClick={() => cartActions.onIncreaseProductQuantity(product)}
         >
           <img className="h-8 w-8" src="/icons/icon-plus.svg" />
         </button>

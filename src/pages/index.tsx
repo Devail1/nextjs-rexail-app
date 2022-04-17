@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import type { GetStaticProps, NextPage } from "next";
 import { useDispatch, useSelector } from "react-redux";
 import Head from "next/head";
 import Link from "next/link";
+import { ReactWindowScroller } from "react-window-scroller";
+
+import { FixedSizeGrid as Grid } from "react-window";
 
 import { TCategory, TProduct } from "types";
 
@@ -15,9 +18,12 @@ const Store: NextPage = () => {
 
   const dispatch = useDispatch();
 
-  const productsCatalog = store.products;
-  const { cartItems, cartTotal } = store.cart;
-  const { currencySign } = store.config;
+  const {
+    products: productsCatalog,
+    cart: { cartItems, cartTotal },
+    config: { currencySign },
+  } = useSelector((state: any) => state);
+
   const searchQuery = store.search;
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
@@ -49,10 +55,26 @@ const Store: NextPage = () => {
     return () => clearTimeout(debounce);
   }, [searchQuery]);
 
-  const handleCategoryClick = (item: TCategory) => {
+  const handleCategoryClick = useCallback((item: TCategory) => {
     setSelectedCategory(item);
     dispatch({ type: "searchQuery/setSearchQuery", payload: "" });
-  };
+  }, []);
+
+  const Cell = useCallback(
+    ({ style, rowIndex, columnIndex, columnCount = 4 }) => {
+      const item =
+        selectedCategory.children && selectedCategory.children[rowIndex * columnCount + columnIndex];
+
+      // if (!item) return null;
+
+      return (
+        <div style={style}>
+          {item ? <StoreItem key={item.id} currencySign={currencySign} product={item} /> : ""}
+        </div>
+      );
+    },
+    [selectedCategory?.children]
+  );
 
   return (
     <div className="pb-73">
@@ -97,14 +119,47 @@ const Store: NextPage = () => {
           )}
         </ul>
       </nav>
+
       <div className="container mx-auto pt-20">
         <div className="display-flex relative">
           <div className="store-widget">
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
-            <div className="store-items-wrapper mt-30">
-              {selectedCategory?.children?.map((item) => (
+            <div className="mt-30 h-full" /*style={{ height: "100vh" }}*/>
+              {/* {selectedCategory?.children?.map((item) => (
                 <StoreItem key={item.id} currencySign={currencySign} product={item} />
-              ))}
+              ))} */}
+              {selectedCategory?.children?.length ? (
+                // <AutoSizer>
+                //   {({ height, width }) => (
+                <ReactWindowScroller isGrid>
+                  {({ ref, outerRef, style, onScroll }: any) => {
+                    return (
+                      <Grid
+                        ref={ref}
+                        style={style}
+                        outerRef={outerRef}
+                        onScroll={onScroll}
+                        className="hide-scrollbar"
+                        direction="rtl"
+                        columnCount={4}
+                        columnWidth={220}
+                        rowHeight={315}
+                        // height={height}
+                        // width={width}
+                        height={window.innerHeight}
+                        width={window.innerWidth}
+                        rowCount={Math.ceil(selectedCategory.children!.length / 4)}
+                      >
+                        {Cell}
+                      </Grid>
+                    );
+                  }}
+                </ReactWindowScroller>
+              ) : (
+                //   )}
+                // </AutoSizer>
+                ""
+              )}
               {searchQuery && !selectedCategory?.children?.length ? (
                 <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
                   לא נמצאו תוצאות לחיפוש

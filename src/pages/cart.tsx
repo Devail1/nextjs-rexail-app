@@ -8,9 +8,10 @@ import { TProduct } from "types";
 const Cart: NextPage = () => {
   const [userComment, setUserComment] = useState("");
 
-  const store = useSelector((state: any) => state);
-  const { cartItems, cartTotal } = store.cart;
-  const { currencySign } = store.config;
+  const {
+    cart: { cartItems, cartTotal },
+    config: { currencySign },
+  } = useSelector((state: any) => state);
 
   const handleUserComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setUserComment(e.target.value);

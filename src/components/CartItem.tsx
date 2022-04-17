@@ -105,7 +105,6 @@ const CartItem = ({ product, cartItemsLength, index, currencySign }: Props) => {
                 </g>
               </svg>
               <select
-                // onChange={(e) => cartActions.onProductCommentSelect(product, e.target.value)}
                 onChange={(e) =>
                   dispatch({
                     type: "product/commentSelected",

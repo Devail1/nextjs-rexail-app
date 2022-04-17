@@ -3,9 +3,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 
 const HeaderMenu = () => {
-  const store = useSelector((state: any) => state);
-  const storeDetails = store.storeDetails;
-  const searchQuery = store.search;
+  const { store: storeDetails, searchQuery } = useSelector((state: any) => state);
 
   const router = useRouter();
   const dispatch = useDispatch();
