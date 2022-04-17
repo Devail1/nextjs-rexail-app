@@ -6,15 +6,9 @@ import "../styles/globals.css";
 import App from "next/app";
 import type { AppProps } from "next/app";
 
-import React, {
-  ReducerAction,
-  ReducerStateWithoutAction,
-  ReducerWithoutAction,
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createStore, combineReducers } from "redux";
-import { Provider, useDispatch } from "react-redux";
+import { Provider } from "react-redux";
 
 import { cartReducer } from "features/cart/cartSlice";
 import { productsCatalogReducer } from "features/productsCatalog/productsCatalogSlice";
@@ -42,13 +36,18 @@ function MyApp({ Component, pageProps, storeDetails, productsCatalog }: MyAppPro
 
   const [store, setStore] = useState(createStore(rootReducer));
 
+  const memoizedProductsCatalog = useMemo(() => productsCatalog, []);
+
+  let initialStoreState = {
+    products: memoizedProductsCatalog,
+    store: storeDetails,
+  } as object;
+
   useEffect(() => {
     const composeEnhancers =
       (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__();
 
-    setStore(
-      createStore(rootReducer, { products: productsCatalog, store: storeDetails } as {}, composeEnhancers)
-    );
+    setStore(createStore(rootReducer, initialStoreState, composeEnhancers));
   }, []);
 
   return (
