@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import type { GetStaticProps, NextPage } from "next";
 import { useDispatch, useSelector } from "react-redux";
 import Head from "next/head";
@@ -27,6 +27,9 @@ const Store: NextPage = () => {
   const searchQuery = store.search;
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
+
+  const [isSortDropdownToggled, setIsSortDropdownToggled] = useState(false);
+  const [selectedSortBy, setSelectedSortBy] = useState<string>("");
 
   useEffect(() => {
     if (productsCatalog) {
@@ -60,12 +63,32 @@ const Store: NextPage = () => {
     dispatch({ type: "searchQuery/setSearchQuery", payload: "" });
   }, []);
 
+  const handleSortByClick = useCallback(
+    (value: string) => {
+      let sorted;
+
+      if (value === "שם מוצר")
+        sorted = selectedCategory?.children?.sort((a, b) => (a.fullName > b.fullName ? 1 : -1)) as TProduct[];
+      if (value === "מחיר מהנמוך לגבוה")
+        sorted = selectedCategory?.children?.sort((a, b) => (a.price > b.price ? 1 : -1)) as TProduct[];
+      if (value === "מחיר מהגבוהה לנמוך")
+        sorted = selectedCategory?.children?.sort((a, b) => (a.price < b.price ? 1 : -1)) as TProduct[];
+      if (value === "מוצרים במבצע")
+        sorted = selectedCategory?.children?.sort((a, b) => (a.promoted < b.promoted ? 1 : -1)) as TProduct[];
+
+      setSelectedCategory({
+        ...selectedCategory,
+        children: sorted,
+      });
+      setSelectedSortBy(value);
+    },
+    [selectedCategory]
+  );
+
   const Cell = useCallback(
     ({ style, rowIndex, columnIndex, columnCount = 4 }) => {
       const item =
         selectedCategory.children && selectedCategory.children[rowIndex * columnCount + columnIndex];
-
-      // if (!item) return null;
 
       return (
         <div style={style}>
@@ -123,14 +146,52 @@ const Store: NextPage = () => {
       <div className="container mx-auto pt-20">
         <div className="display-flex relative">
           <div className="store-widget">
-            <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
-            <div className="mt-30 h-full" /*style={{ height: "100vh" }}*/>
-              {/* {selectedCategory?.children?.map((item) => (
-                <StoreItem key={item.id} currencySign={currencySign} product={item} />
-              ))} */}
+            <div className="display-flex justify-between align-center">
+              <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
+              <button
+                type="button"
+                className={
+                  selectedSortBy && isSortDropdownToggled
+                    ? "dropdown-active selected-sort sort-items c-p display-flex justify-between relative"
+                    : selectedSortBy
+                    ? "selected-sort sort-items c-p display-flex justify-between relative"
+                    : isSortDropdownToggled
+                    ? "dropdown-active sort-items c-p display-flex justify-between relative"
+                    : "sort-items c-p display-flex justify-between relative"
+                }
+                onClick={() => setIsSortDropdownToggled(!isSortDropdownToggled)}
+              >
+                <span className="font-blue">{selectedSortBy ? selectedSortBy : "מיין לפי"}</span>
+                <svg className="icon-arrow-down" viewBox="0 0 11 11" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M5.5 6.746 1.341 2.587a.786.786 0 0 0-1.11 1.111l4.713 4.715a.786.786 0 0 0 1.112 0l4.714-4.715a.786.786 0 0 0-1.111-1.11L5.5 6.745z"
+                    fill="currentColor"
+                    fillRule="evenodd"
+                  />
+                </svg>
+
+                {isSortDropdownToggled ? (
+                  <ul className="dropdown-menu absolute mt-30">
+                    <li className="dropdown-item" onClick={() => handleSortByClick("שם מוצר")}>
+                      <a>שם מוצר</a>
+                    </li>
+                    <li className="dropdown-item" onClick={() => handleSortByClick("מחיר מהנמוך לגבוה")}>
+                      <a>מחיר מהנמוך לגבוה </a>
+                    </li>
+                    <li className="dropdown-item" onClick={() => handleSortByClick("מחיר מהגבוהה לנמוך")}>
+                      <a>מחיר מהגבוהה לנמוך </a>
+                    </li>
+                    <li className="dropdown-item" onClick={() => handleSortByClick("מוצרים במבצע")}>
+                      <a>מוצרים במבצע</a>
+                    </li>
+                  </ul>
+                ) : (
+                  ""
+                )}
+              </button>
+            </div>
+            <div className="mt-30 h-full">
               {selectedCategory?.children?.length ? (
-                // <AutoSizer>
-                //   {({ height, width }) => (
                 <ReactWindowScroller isGrid>
                   {({ ref, outerRef, style, onScroll }: any) => {
                     return (
@@ -139,13 +200,11 @@ const Store: NextPage = () => {
                         style={style}
                         outerRef={outerRef}
                         onScroll={onScroll}
-                        className="hide-scrollbar"
+                        className="overflow-visible"
                         direction="rtl"
                         columnCount={4}
                         columnWidth={220}
                         rowHeight={315}
-                        // height={height}
-                        // width={width}
                         height={window.innerHeight}
                         width={window.innerWidth}
                         rowCount={Math.ceil(selectedCategory.children!.length / 4)}
@@ -156,8 +215,6 @@ const Store: NextPage = () => {
                   }}
                 </ReactWindowScroller>
               ) : (
-                //   )}
-                // </AutoSizer>
                 ""
               )}
               {searchQuery && !selectedCategory?.children?.length ? (

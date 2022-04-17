@@ -1031,6 +1031,10 @@ button:disabled {
   background: transparent; /* Optional: just make scrollbar invisible */
 }
 
+.overflow-visible {
+  overflow: visible;
+}
+
 .not-active {
   pointer-events: none;
   cursor: default;
