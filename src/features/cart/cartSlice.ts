@@ -1,6 +1,5 @@
 import { TProduct, Unit } from "types";
 import { calculateTotal } from "utils";
-
 export interface ICartState {
   cartItems: TProduct[];
   cartTotal: string;
@@ -24,14 +23,18 @@ type PayloadAction = {
     commentID: string;
   };
 };
+
 export function cartReducer(state = initialState, action: PayloadAction) {
   switch (action.type) {
     case "product/incremented": {
       const product = action.payload;
 
-      product.quantity = product.quantity
-        ? product.quantity + product.primaryQuantityUnit!.sellingUnit.amountJumps
-        : product.primaryQuantityUnit!.sellingUnit.amountJumps;
+      // Check if product quantity has not reached it's max limit
+      if (!product.quantity || product.quantity < product.primaryQuantityUnit.maxAmount) {
+        product.quantity = product.quantity
+          ? product.quantity + product.primaryQuantityUnit!.sellingUnit.amountJumps
+          : product.primaryQuantityUnit!.sellingUnit.amountJumps;
+      }
 
       // If the product is not in the cart than increament quantity and push to cart
       if (!state.cartItems.some((item) => item.id === action.payload.id)) state.cartItems.unshift(product);
