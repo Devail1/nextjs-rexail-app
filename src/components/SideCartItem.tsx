@@ -1,5 +1,5 @@
-import { CartContext } from "pages/_app";
-import { useContext, useState } from "react";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { TProduct } from "types";
 
 interface Props {
@@ -8,9 +8,9 @@ interface Props {
 }
 
 const SideCartItem = ({ product, currencySign }: Props) => {
-  const [isUnitTypeDropdownToggled, setIsUnitTypeDropdownToggled] = useState(false);
+  const dispatch = useDispatch();
 
-  const { cartActions } = useContext(CartContext);
+  const [isUnitTypeDropdownToggled, setIsUnitTypeDropdownToggled] = useState(false);
 
   return (
     <div id={product.id.toString()} className="item-preview display-flex align-center">
@@ -32,7 +32,7 @@ const SideCartItem = ({ product, currencySign }: Props) => {
         <button
           type="button"
           className="cart-preview-btn"
-          onClick={() => cartActions.onRemoveProduct(product)}
+          onClick={() => dispatch({ type: "product/removed", payload: product })}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,7 @@ const SideCartItem = ({ product, currencySign }: Props) => {
         <button
           type="button"
           className="plus-minus-preview-container"
-          onClick={() => cartActions.onIncreaseProductQuantity(product)}
+          onClick={() => dispatch({ type: "product/incremented", payload: product })}
         >
           <img className="h-8 w-8" src="/icons/icon-plus.svg" />
         </button>
@@ -87,8 +87,13 @@ const SideCartItem = ({ product, currencySign }: Props) => {
                   return (
                     <li
                       key={productSellingUnit.id}
-                      onClick={() => cartActions.onUnitTypeChange(product, productSellingUnit)}
                       className="dropdown-item"
+                      onClick={() =>
+                        dispatch({
+                          type: "product/unitTypeSelected",
+                          payload: { product, productSellingUnit },
+                        })
+                      }
                     >
                       <a>{productSellingUnit.sellingUnit.name} </a>
                     </li>
@@ -101,7 +106,7 @@ const SideCartItem = ({ product, currencySign }: Props) => {
         <button
           type="button"
           className="plus-minus-preview-container"
-          onClick={() => cartActions.onDecreaseProductQuantity(product)}
+          onClick={() => dispatch({ type: "product/decremented", payload: product })}
         >
           <img className="h-8 w-8" src="/icons/icon-minus.svg" />
         </button>

@@ -3,9 +3,10 @@ import CheckoutForm from "components/CheckoutForm";
 import { useSelector } from "react-redux";
 
 const Checkout: NextPage = () => {
-  const store = useSelector((state: any) => state);
-  const { cartTotal } = store.cart;
-  const { currencySign } = store.config;
+  const {
+    cart: { cartTotal },
+    config: { currencySign },
+  } = useSelector((state: any) => state);
 
   return (
     <div className="main-bg">

@@ -77,7 +77,10 @@ html,
 body {
   height: 100%;
 }
-
+body::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
 .bg {
   background-color: #eef1ef;
 }
@@ -1022,6 +1025,11 @@ button:disabled {
 /*  */
 
 /* -----------Utils----------- */
+
+.hide-scrollbar::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
 
 .not-active {
   pointer-events: none;

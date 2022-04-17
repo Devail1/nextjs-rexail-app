@@ -1,48 +1,51 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import type { GetStaticProps, NextPage } from "next";
+import { useDispatch, useSelector } from "react-redux";
 import Head from "next/head";
 import Link from "next/link";
-import { CartContext, DataContext } from "pages/_app";
+import { ReactWindowScroller } from "react-window-scroller";
+
+import { FixedSizeGrid as Grid } from "react-window";
 
 import { TCategory, TProduct } from "types";
 
-import StoreItem /*,{ IStoreItemProps }*/ from "components/StoreItem";
+import StoreItem from "components/StoreItem";
 import List from "components/List";
 import SideCartItem from "components/SideCartItem";
 
 const Store: NextPage = () => {
-  console.log("Store Page Render");
+  const store = useSelector((state: any) => state);
 
-  const { cartState, cartActions } = useContext(CartContext);
-  const { searchQuery, setSearchQuery, productsData } = useContext(DataContext);
+  const dispatch = useDispatch();
+
+  const {
+    products: productsCatalog,
+    cart: { cartItems, cartTotal },
+    config: { currencySign },
+  } = useSelector((state: any) => state);
+
+  const searchQuery = store.search;
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
   useEffect(() => {
-    if (productsData) {
-      setSelectedCategory(productsData[0]);
+    if (productsCatalog) {
+      setSelectedCategory(productsCatalog[0]);
     }
-  }, [productsData]);
-
-  const memoizedStoreItems = useMemo(
-    () =>
-      selectedCategory.children?.map((item) => (
-        <StoreItem key={item.id} currencySign={cartState.currencySign} product={item} />
-      )),
-    [selectedCategory.children]
-  );
-
-  // const MemoizedStoreItem = ({ product, currencySign }: IStoreItemProps) =>
-  //   useMemo(() => <StoreItem key={product.id} currencySign={currencySign} product={product} />, [product]);
+  }, [productsCatalog]);
 
   useEffect(() => {
     let debounce = setTimeout(() => {
       if (selectedCategory.children) {
-        let currentCategory = productsData.filter((category) => category.id === selectedCategory.id)[0];
+        let currentCategory = productsCatalog.filter(
+          (category: TCategory) => category.id === selectedCategory.id
+        )[0];
         if (searchQuery.length >= 3) {
           setSelectedCategory({
             ...selectedCategory,
-            children: currentCategory.children?.filter((product) => product.fullName.includes(searchQuery)),
+            children: currentCategory.children?.filter((product: TProduct) =>
+              product.fullName.includes(searchQuery)
+            ),
           });
         } else {
           setSelectedCategory(currentCategory);
@@ -52,10 +55,26 @@ const Store: NextPage = () => {
     return () => clearTimeout(debounce);
   }, [searchQuery]);
 
-  const handleCategoryClick = (item: TCategory) => {
+  const handleCategoryClick = useCallback((item: TCategory) => {
     setSelectedCategory(item);
-    setSearchQuery("");
-  };
+    dispatch({ type: "searchQuery/setSearchQuery", payload: "" });
+  }, []);
+
+  const Cell = useCallback(
+    ({ style, rowIndex, columnIndex, columnCount = 4 }) => {
+      const item =
+        selectedCategory.children && selectedCategory.children[rowIndex * columnCount + columnIndex];
+
+      // if (!item) return null;
+
+      return (
+        <div style={style}>
+          {item ? <StoreItem key={item.id} currencySign={currencySign} product={item} /> : ""}
+        </div>
+      );
+    },
+    [selectedCategory?.children]
+  );
 
   return (
     <div className="pb-73">
@@ -67,7 +86,7 @@ const Store: NextPage = () => {
       <nav id="categories" className="categories-wrapper">
         <ul className="container mx-auto h-full display-flex align-center justify-evenly font-gray-900">
           <List<TCategory>
-            items={productsData?.slice(0, 10)}
+            items={productsCatalog?.slice(0, 10)}
             renderItem={(item) => (
               <li
                 key={item.id}
@@ -79,12 +98,12 @@ const Store: NextPage = () => {
               </li>
             )}
           />
-          {productsData.length > 10 ? (
+          {productsCatalog.length > 10 ? (
             <ul className="category show-more-categories">
               <span>עוד</span>
               <ul className="categories-show-more display-flex flex-vertical absolute pt-10 rounded-10">
                 <List<TCategory>
-                  items={productsData?.slice(10, productsData.length)}
+                  items={productsCatalog?.slice(10, productsCatalog.length)}
                   renderItem={(item) => (
                     <li key={item.id} className="category show-more">
                       <button type="button" onClick={() => handleCategoryClick(item)}>
@@ -100,12 +119,47 @@ const Store: NextPage = () => {
           )}
         </ul>
       </nav>
+
       <div className="container mx-auto pt-20">
         <div className="display-flex relative">
           <div className="store-widget">
             <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
-            <div className="store-items-wrapper mt-30">
-              {memoizedStoreItems}
+            <div className="mt-30 h-full" /*style={{ height: "100vh" }}*/>
+              {/* {selectedCategory?.children?.map((item) => (
+                <StoreItem key={item.id} currencySign={currencySign} product={item} />
+              ))} */}
+              {selectedCategory?.children?.length ? (
+                // <AutoSizer>
+                //   {({ height, width }) => (
+                <ReactWindowScroller isGrid>
+                  {({ ref, outerRef, style, onScroll }: any) => {
+                    return (
+                      <Grid
+                        ref={ref}
+                        style={style}
+                        outerRef={outerRef}
+                        onScroll={onScroll}
+                        className="hide-scrollbar"
+                        direction="rtl"
+                        columnCount={4}
+                        columnWidth={220}
+                        rowHeight={315}
+                        // height={height}
+                        // width={width}
+                        height={window.innerHeight}
+                        width={window.innerWidth}
+                        rowCount={Math.ceil(selectedCategory.children!.length / 4)}
+                      >
+                        {Cell}
+                      </Grid>
+                    );
+                  }}
+                </ReactWindowScroller>
+              ) : (
+                //   )}
+                // </AutoSizer>
+                ""
+              )}
               {searchQuery && !selectedCategory?.children?.length ? (
                 <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
                   לא נמצאו תוצאות לחיפוש
@@ -120,23 +174,21 @@ const Store: NextPage = () => {
               <div className="cart-preview-header display-flex align-center px-16">
                 <img className="w-22 h-22 ml-10" src="/icons/button-arrow-up.svg" />
                 <img className="icon-basket" src="/icons/icon-basket-green.svg" />
-                <span className="text-sm font-white mt-8 cart-preview-items-count">
-                  {cartState.cartItems.length}
-                </span>
+                <span className="text-sm font-white mt-8 cart-preview-items-count">{cartItems.length}</span>
                 <div className="display-flex flex-vertical font-white mr-8 ml-auto">
                   <span className="text-weight-300 font-size-14">סל הקניות שלי</span>
                   <span className="font-size-18">
-                    {cartState.currencySign}
-                    {cartState.cartTotal}
+                    {currencySign}
+                    {cartTotal}
                   </span>
                 </div>
                 <button
                   type="button"
                   className="proceed-to-checkout-btn font-white font-size-16"
-                  disabled={!cartState.cartItems.length}
+                  disabled={!cartItems.length}
                 >
                   <span>
-                    {!cartState.cartItems.length ? (
+                    {!cartItems.length ? (
                       <a>המשך לתשלום</a>
                     ) : (
                       <Link href="/cart">
@@ -150,14 +202,14 @@ const Store: NextPage = () => {
                 <button
                   type="button"
                   className="c-p display-flex align-center h-full w-85 mr-auto"
-                  onClick={cartActions.onClearCart}
+                  onClick={() => dispatch({ type: "cart/cleared" })}
                 >
                   <img src="/icons/icon-trash.svg" />
                   <span className="mr-5 font-size-14"> מחיקת סל </span>
                 </button>
               </div>
               <div className="cart-items-preview-wrapper">
-                {!cartState.cartItems.length ? (
+                {!cartItems.length ? (
                   <div className="display-flex flex-vertical align-center pt-20">
                     <img src="/images/empty-basket.png" />
                     <span className="mt-10 font-size-22 font-blue text-weight-700 font-heebo">
@@ -167,24 +219,24 @@ const Store: NextPage = () => {
                   </div>
                 ) : (
                   <List<TProduct>
-                    items={cartState.cartItems}
+                    items={cartItems}
                     renderItem={(item) => (
-                      <SideCartItem key={item.id} currencySign={cartState.currencySign} product={item} />
+                      <SideCartItem key={item.id} currencySign={currencySign} product={item} />
                     )}
                   />
                 )}
               </div>
               <div className="cart-preview-footer px-28 display-flex flex-vertical align-center justify-center">
-                <button type="button" className="btn-green w-full" disabled={!cartState.cartItems.length}>
-                  {!cartState.cartItems.length ? (
+                <button type="button" className="btn-green w-full" disabled={!cartItems.length}>
+                  {!cartItems.length ? (
                     <a className="w-full h-full">
                       <div className="display-flex align-center justify-between h-full">
                         <span className="font-heebo text-weight-500 font-white checkout-text">
                           המשך לתשלום
                         </span>
                         <span className="font-heebo text-weight-500 font-white total-sum">
-                          {cartState.currencySign}
-                          {cartState.cartTotal}
+                          {currencySign}
+                          {cartTotal}
                         </span>
                       </div>
                     </a>
@@ -196,8 +248,8 @@ const Store: NextPage = () => {
                             המשך לתשלום
                           </span>
                           <span className="font-heebo text-weight-500 font-white total-sum">
-                            {cartState.currencySign}
-                            {cartState.cartTotal}
+                            {currencySign}
+                            {cartTotal}
                           </span>
                         </div>
                       </a>

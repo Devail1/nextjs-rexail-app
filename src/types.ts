@@ -1,4 +1,4 @@
-export interface TStoreData {
+export interface TstoreDetails {
   name: string;
   businessAddressFormatted: string;
   businessEmail: string;

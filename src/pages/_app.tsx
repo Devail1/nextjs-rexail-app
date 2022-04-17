@@ -6,48 +6,56 @@ import "../styles/globals.css";
 import App from "next/app";
 import type { AppProps } from "next/app";
 
-import { TCategory, TStoreData } from "types";
+import React, { useEffect, useMemo, useState } from "react";
+import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
 
-import { createContext, Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { TCartStore, useCartStore } from "hooks/useCartStore";
+import { cartReducer } from "features/cart/cartSlice";
+import { productsCatalogReducer } from "features/productsCatalog/productsCatalogSlice";
+import { storeDetailsReducer } from "features/storeDetails/storeDetailsSlice";
+import { searchQueryReducer } from "features/searchQuery/searchQuerySlice";
+import { configReducer } from "features/config/configSlice";
+
+import { TCategory, TstoreDetails } from "types";
 import { formatData } from "utils";
 
 import Layout from "components/Layout";
-
 interface MyAppProps extends AppProps {
-  storeData: TStoreData;
-  productsData: TCategory[];
+  storeDetails: TstoreDetails;
+  productsCatalog: TCategory[];
 }
 
-export type TDataContextProvider = {
-  storeData: TStoreData;
-  productsData: TCategory[];
-  searchQuery: string;
-  setSearchQuery: Dispatch<SetStateAction<string>>;
-};
+function MyApp({ Component, pageProps, storeDetails, productsCatalog }: MyAppProps) {
+  const rootReducer = combineReducers({
+    cart: cartReducer,
+    products: productsCatalogReducer,
+    store: storeDetailsReducer,
+    search: searchQueryReducer,
+    config: configReducer,
+  });
 
-export const DataContext = createContext<TDataContextProvider>({} as TDataContextProvider);
-export const CartContext = createContext<TCartStore>({} as TCartStore);
+  const [store, setStore] = useState(createStore(rootReducer));
 
-function MyApp({ Component, pageProps, storeData, productsData }: MyAppProps) {
-  console.log("App Rendered");
+  const memoizedProductsCatalog = useMemo(() => productsCatalog, []);
 
-  const [searchQuery, setSearchQuery] = useState("");
+  let initialStoreState = {
+    products: memoizedProductsCatalog,
+    store: storeDetails,
+  } as object;
 
-  const cartStore = useCartStore();
+  useEffect(() => {
+    const composeEnhancers =
+      (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__();
 
-  const cartStoreValue = useMemo(() => {
-    return cartStore;
-  }, [cartStore]);
+    setStore(createStore(rootReducer, initialStoreState, composeEnhancers));
+  }, []);
 
   return (
-    <DataContext.Provider value={{ storeData, productsData, searchQuery, setSearchQuery }}>
+    <Provider store={store}>
       <Layout>
-        <CartContext.Provider value={cartStoreValue}>
-          <Component {...pageProps} />
-        </CartContext.Provider>
+        <Component {...pageProps} />
       </Layout>
-    </DataContext.Provider>
+    </Provider>
   );
 }
 
@@ -59,15 +67,15 @@ MyApp.getInitialProps = async (appContext: any) => {
     "https://test.rexail.co.il/client/public/store/website?domain=testeitan.rexail.co.il"
   );
 
-  const storeData: TStoreData = response1.data.data;
+  const storeDetails: TstoreDetails = response1.data.data;
 
   const response2 = await axios.get(
-    `https://test.rexail.co.il/client/public/store/catalog?s_jwe=${storeData.jsonWebEncryption}`
+    `https://test.rexail.co.il/client/public/store/catalog?s_jwe=${storeDetails.jsonWebEncryption}`
   );
 
-  const productsData = formatData(response2.data.data);
+  const productsCatalog = formatData(response2.data.data);
 
-  let appData = { storeData, productsData };
+  let appData = { storeDetails, productsCatalog };
 
   return { ...appProps, ...appData };
 };

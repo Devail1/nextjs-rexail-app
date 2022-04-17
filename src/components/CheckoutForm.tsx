@@ -209,7 +209,6 @@ const CheckoutForm = ({ currencySign, cartTotal }: Props) => {
                 className="btn-primary display-flex align-center justify-center"
                 disabled={isSubmitting || !!Object.values(errors).length || !Object.values(touched).length}
               >
-                {console.log(!Object.values(touched).length)}
                 <img className="w-20 h-20 ml-4" src="/icons/icon-lock-light.svg" />
                 סיום הזמנה&emsp;|&emsp;
                 {currencySign}

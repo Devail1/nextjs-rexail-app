@@ -1,17 +1,19 @@
-import { TCartActions } from "hooks/useCartStore";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { TProduct } from "types";
 
 type Props = {
   product: TProduct;
-  cartActions: TCartActions;
   currencySign: string;
   index: number;
   cartItemsLength: number;
 };
 
-const CartItem = ({ product, cartItemsLength, index, cartActions, currencySign }: Props) => {
+const CartItem = ({ product, cartItemsLength, index, currencySign }: Props) => {
+  const dispatch = useDispatch();
+
   const [isUnitTypeDropdownToggled, setIsUnitTypeDropdownToggled] = useState(false);
+
   return (
     <div
       id={product.id.toString()}
@@ -43,7 +45,7 @@ const CartItem = ({ product, cartItemsLength, index, cartActions, currencySign }
           {currencySign} . בתוקף עד ה04.01.22
           <div className="tooltip-right-arrow"></div>
         </div>
-        <button type="button" onClick={() => cartActions.onRemoveProduct(product)}>
+        <button type="button" onClick={() => dispatch({ type: "product/removed", payload: product })}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-36 w-36 font-red absolute c-p remove-item-btn mt-5"
@@ -103,7 +105,12 @@ const CartItem = ({ product, cartItemsLength, index, cartActions, currencySign }
                 </g>
               </svg>
               <select
-                onChange={(e) => cartActions.onProductCommentSelect(product, e.target.value)}
+                onChange={(e) =>
+                  dispatch({
+                    type: "product/commentSelected",
+                    payload: { product: product, commentID: e.target.value },
+                  })
+                }
                 className={
                   product.comment
                     ? "border-green select-unit c-p mt-10 rounded-25 w-full display-flex align-center justify-between"
@@ -112,11 +119,7 @@ const CartItem = ({ product, cartItemsLength, index, cartActions, currencySign }
               >
                 <option value="">{product.commentType.name}</option>
                 {product.commentType.comments.map((comment) => {
-                  return (
-                    <option key={comment.id} value={comment.id}>
-                      {comment.name}
-                    </option>
-                  );
+                  return <option key={comment.id} label={comment.name} value={comment.id} />;
                 })}
               </select>
               <svg
@@ -172,7 +175,7 @@ const CartItem = ({ product, cartItemsLength, index, cartActions, currencySign }
         <button
           type="button"
           className="plus-minus-preview-container"
-          onClick={() => cartActions.onIncreaseProductQuantity(product)}
+          onClick={() => dispatch({ type: "product/incremented", payload: product })}
         >
           <img className="h-8 w-8 absolute" src="/icons/icon-plus.svg" />
         </button>
@@ -204,7 +207,12 @@ const CartItem = ({ product, cartItemsLength, index, cartActions, currencySign }
                     return (
                       <li
                         key={productSellingUnit.id}
-                        onClick={() => cartActions.onUnitTypeChange(product, productSellingUnit)}
+                        onClick={() =>
+                          dispatch({
+                            type: "product/unitTypeSelected",
+                            payload: { product, productSellingUnit },
+                          })
+                        }
                         className="dropdown-item"
                       >
                         <a>{productSellingUnit.sellingUnit.name} </a>
@@ -219,7 +227,7 @@ const CartItem = ({ product, cartItemsLength, index, cartActions, currencySign }
         <button
           type="button"
           className="plus-minus-preview-container"
-          onClick={() => cartActions.onDecreaseProductQuantity(product)}
+          onClick={() => dispatch({ type: "product/decremented", payload: product })}
         >
           <img className="h-8 w-8 absolute" src="/icons/icon-minus.svg" />
         </button>

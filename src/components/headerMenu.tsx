@@ -1,15 +1,15 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { DataContext } from "pages/_app";
-import { useContext } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const HeaderMenu = () => {
-  const { storeData, searchQuery, setSearchQuery } = useContext(DataContext);
+  const { store: storeDetails, searchQuery } = useSelector((state: any) => state);
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    dispatch({ type: "searchQuery/setSearchQuery", payload: e.target.value });
   };
 
   return (
@@ -43,7 +43,7 @@ const HeaderMenu = () => {
             <div className="display-flex align-center mt-30">
               <img src="/images/logo.png" />
               <div>
-                <div className="text-title mb-5">{storeData?.name}</div>
+                <div className="text-title mb-5">{storeDetails?.name}</div>
                 <div className="display-flex align-center my-3 c-p">
                   <svg
                     className="ml-5 font-white"
@@ -79,7 +79,7 @@ const HeaderMenu = () => {
                 </div>
                 <div className="display-flex align-center my-3 c-p">
                   <img className="ml-5" src="/icons/icon-location-2.svg" />
-                  {storeData?.store?.businessFullAddressWithCity}
+                  {storeDetails?.store?.businessFullAddressWithCity}
                 </div>
               </div>
             </div>
@@ -94,7 +94,7 @@ const HeaderMenu = () => {
             <a>
               <img className="logo-img round w-60 h-60" src="/images/logo.png" alt="logo" />
             </a>
-            <div className="text-title mb-5 mr-10">{storeData?.name}</div>
+            <div className="text-title mb-5 mr-10">{storeDetails?.name}</div>
           </div>
           {router.pathname !== "/checkout" ? (
             <>
