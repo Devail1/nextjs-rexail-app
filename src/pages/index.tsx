@@ -83,7 +83,7 @@ const Store: NextPage = () => {
       });
       setSelectedSortBy(value);
     },
-    [selectedCategory]
+    [selectedCategory?.children]
   );
 
   const Cell = useCallback(
