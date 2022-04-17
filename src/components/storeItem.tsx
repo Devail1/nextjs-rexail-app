@@ -26,9 +26,9 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
 
   return (
     <div className="store-item rounded-10 display-flex flex-vertical align-center justify-around">
-      <div className="store-item-overlay font-gray-900 text-sm">
-        <div className="display-flex flex-vertical align-center justify-around">
-          <span className="mb-60">{fullName}</span>
+      <div className="store-item-overlay font-gray-900 text-sm pb-22">
+        <div className="display-flex flex-vertical align-center justify-around h-full">
+          <span>{fullName}</span>
           <div className="display-flex product-rating-wrapper absolute">
             {currentRelevancy?.name == "low" && (
               <div>
@@ -70,7 +70,7 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
               </div>
             )}
           </div>
-          <div className="mt-30 mb-5">
+          <div className="mt-auto">
             <span className="font-heebo font-size-18 text-weight-700">
               {currencySign}
               {price}
