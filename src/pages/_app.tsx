@@ -1,12 +1,14 @@
 import "wdyr";
 
+import { TCategory, TstoreDetails } from "types";
+import type { AppProps } from "next/app";
+
 import axios from "axios";
 
 import "../styles/globals.css";
 import App from "next/app";
-import type { AppProps } from "next/app";
 
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
 
@@ -16,7 +18,6 @@ import { storeDetailsReducer } from "features/storeDetails/storeDetailsSlice";
 import { searchQueryReducer } from "features/searchQuery/searchQuerySlice";
 import { configReducer } from "features/config/configSlice";
 
-import { TCategory, TstoreDetails } from "types";
 import { formatData } from "utils";
 
 import Layout from "components/Layout";

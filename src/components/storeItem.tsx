@@ -1,4 +1,3 @@
-import React, { useContext } from "react";
 import { useDispatch } from "react-redux";
 import { TProduct, Unit } from "types";
 
@@ -226,10 +225,5 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
     </div>
   );
 };
-
-// StoreItem.whyDidYouRender = {
-//   logOnDifferentValues: true,
-//   customName: "Store",
-// };
 
 export default StoreItem;

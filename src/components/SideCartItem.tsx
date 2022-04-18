@@ -1,6 +1,6 @@
+import { TProduct } from "types";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { TProduct } from "types";
 
 interface Props {
   product: TProduct;

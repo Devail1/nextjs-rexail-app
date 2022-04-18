@@ -1,12 +1,14 @@
-import React, { useEffect, useCallback, useState } from "react";
-import type { GetStaticProps, NextPage } from "next";
-import { useDispatch, useSelector } from "react-redux";
-import Head from "next/head";
-import { ReactWindowScroller } from "react-window-scroller";
-
-import { FixedSizeGrid as Grid } from "react-window";
-
 import { TCategory, TProduct } from "types";
+import type { GetStaticProps, NextPage } from "next";
+
+import { useEffect, useCallback, useState } from "react";
+
+import Head from "next/head";
+
+import { useDispatch, useSelector } from "react-redux";
+
+import { ReactWindowScroller } from "react-window-scroller";
+import { FixedSizeGrid as Grid } from "react-window";
 
 import StoreItem from "components/StoreItem";
 import List from "components/List";
@@ -234,15 +236,10 @@ const Store: NextPage = () => {
   );
 };
 
-// Store.whyDidYouRender = {
-//   logOnDifferentValues: true,
-//   customName: "Store",
-// };
-
 export default Store;
 
 export const getStaticProps: GetStaticProps = async (context) => {
   return {
-    props: {}, // will be passed to the page component as props
+    props: {},
   };
 };

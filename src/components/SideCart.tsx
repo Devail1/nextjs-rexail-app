@@ -1,10 +1,12 @@
+import { TProduct } from "types";
+
 import Link from "next/link";
+
+import { useDispatch, useSelector } from "react-redux";
+import useDimensions from "react-use-dimensions";
 
 import List from "./List";
 import SideCartItem from "./SideCartItem";
-import { useDispatch, useSelector } from "react-redux";
-import { TProduct } from "types";
-import useDimensions from "react-use-dimensions";
 
 const SideCart = () => {
   const {
