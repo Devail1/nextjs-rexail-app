@@ -1,9 +1,8 @@
-import { TProduct } from "types";
-
-import Link from "next/link";
-
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import useDimensions from "react-use-dimensions";
+import useScrollPosition from "hooks/useScrollPosition";
+import Link from "next/link";
+import { TProduct } from "types";
 
 import List from "./List";
 import SideCartItem from "./SideCartItem";
@@ -16,12 +15,22 @@ const SideCart = () => {
 
   const dispatch = useDispatch();
 
-  const [ref, { y }] = useDimensions();
+  const scrollPosition = useScrollPosition();
+
+  const [containerHeight, setContainerHeight] = useState<number>(330);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (containerRef && window && scrollPosition < 300) {
+      const refDimensions = containerRef.current?.getBoundingClientRect();
+      if (refDimensions) setContainerHeight(window.innerHeight - refDimensions.y);
+    }
+  }, [scrollPosition]);
 
   return (
     <div className="side-cart-wrapper ">
       {typeof window !== "undefined" ? (
-        <section className="side-cart " ref={ref} style={{ height: window.innerHeight - y - 15 }}>
+        <section className="side-cart " ref={containerRef} style={{ height: containerHeight - 15 }}>
           <div className="side-cart-header display-flex align-center px-16">
             <img className="w-22 h-22 ml-10" src="/icons/button-arrow-up.svg" />
             <img className="icon-basket" src="/icons/icon-basket-green.svg" />
@@ -59,7 +68,7 @@ const SideCart = () => {
               <span className="mr-5 font-size-14"> מחיקת סל </span>
             </button>
           </div>
-          <div className="cart-items-preview-wrapper" style={{ height: window.innerHeight - y - 200 }}>
+          <div className="cart-items-preview-wrapper" style={{ height: containerHeight - 200 }}>
             {!cartItems.length ? (
               <div className="display-flex flex-vertical align-center pt-20">
                 <img src="/images/empty-basket.png" />
