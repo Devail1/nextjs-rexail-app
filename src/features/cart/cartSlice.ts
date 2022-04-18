@@ -18,16 +18,16 @@ type PayloadAction = {
     | "product/commentSelected"
     | "product/unitTypeSelected"
     | "cart/cleared";
-  payload: TProduct & { product: TProduct; productSellingUnit: Unit } & {
-    product: TProduct;
-    commentID: string;
-  };
+  payload:
+    | TProduct
+    | { product: TProduct; commentID: string }
+    | { product: TProduct; productSellingUnit: Unit };
 };
 
 export function cartReducer(state = initialState, action: PayloadAction) {
   switch (action.type) {
     case "product/incremented": {
-      const product = action.payload;
+      const product = action.payload as TProduct;
 
       // Check if product quantity has not reached it's max limit
       if (!product.quantity || product.quantity < product.primaryQuantityUnit.maxAmount) {
@@ -37,7 +37,7 @@ export function cartReducer(state = initialState, action: PayloadAction) {
       }
 
       // If the product is not in the cart than increament quantity and push to cart
-      if (!state.cartItems.some((item) => item.id === action.payload.id)) state.cartItems.unshift(product);
+      if (!state.cartItems.some((item) => item.id === product.id)) state.cartItems.unshift(product);
 
       // Update cart total
       state.cartTotal = calculateTotal(state.cartItems);
@@ -46,7 +46,7 @@ export function cartReducer(state = initialState, action: PayloadAction) {
       return { ...state };
     }
     case "product/decremented": {
-      const product = action.payload;
+      const product = action.payload as TProduct;
 
       if (product.quantity! > product.primaryQuantityUnit.sellingUnit.amountJumps) {
         // If product quantity has not reached min value
@@ -66,14 +66,17 @@ export function cartReducer(state = initialState, action: PayloadAction) {
       return initialState;
 
     case "product/removed":
-      const product = action.payload;
+      const product = action.payload as TProduct;
       product.quantity = undefined;
-      state.cartItems = state.cartItems.filter((item) => item.id !== action.payload.id);
+      state.cartItems = state.cartItems.filter((item) => item.id !== product.id);
 
       return { ...state };
 
     case "product/commentSelected": {
-      const { product, commentID } = action.payload;
+      const { product, commentID } = action.payload as {
+        product: TProduct;
+        commentID: string;
+      };
       product.comment = product.commentType?.comments.find((comment) => comment.id === commentID);
 
       return { ...state };
@@ -83,7 +86,10 @@ export function cartReducer(state = initialState, action: PayloadAction) {
     // if the new unit weight is higher, than it multiplies the price by the unit weight,
     // else, if it is lower, divide the price by the previous unit weight value, func does the same for old price.
     case "product/unitTypeSelected": {
-      const { product, productSellingUnit } = action.payload;
+      const { product, productSellingUnit } = action.payload as {
+        product: TProduct;
+        productSellingUnit: Unit;
+      };
 
       // Assign to product the new quantity unit
       product.primaryQuantityUnit = productSellingUnit;
