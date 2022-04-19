@@ -25,6 +25,9 @@ const Store: NextPage = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
+  const [minimizeSideCart, setMinimizeSideCart] = useState(false);
+  const [gridColumnCount, setGridColumnCount] = useState(4);
+  const [gridColumnWidth, setGridColumnWidth] = useState(4);
   const [selectedSortBy, setSelectedSortBy] = useState<string>("");
   const [isSortDropdownToggled, setIsSortDropdownToggled] = useState(false);
 
@@ -33,6 +36,18 @@ const Store: NextPage = () => {
       setSelectedCategory(productsCatalog[0]);
     }
   }, [productsCatalog]);
+
+  useEffect(() => {
+    if (minimizeSideCart) {
+      setTimeout(() => {
+        setGridColumnCount(5);
+        setGridColumnWidth(230);
+      }, 600);
+    } else {
+      setGridColumnCount(4);
+      setGridColumnWidth(208);
+    }
+  }, [minimizeSideCart]);
 
   useEffect(() => {
     let debounce = setTimeout(() => {
@@ -95,11 +110,20 @@ const Store: NextPage = () => {
 
       return (
         <div style={style}>
-          {item ? <StoreItem key={item.id} currencySign={currencySign} product={item} /> : ""}
+          {item ? (
+            <StoreItem
+              key={item.id}
+              currencySign={currencySign}
+              product={item}
+              gridColumnWidth={gridColumnWidth}
+            />
+          ) : (
+            ""
+          )}
         </div>
       );
     },
-    [selectedCategory?.children]
+    [selectedCategory?.children, gridColumnWidth]
   );
 
   return (
@@ -148,7 +172,7 @@ const Store: NextPage = () => {
 
       <div className="container mx-auto pt-20">
         <div className="display-flex relative">
-          <div className="store-widget">
+          <div className="store-widget-wrapper display-flex flex-vertical ">
             <div className="display-flex justify-between align-center">
               <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
               <button
@@ -193,43 +217,45 @@ const Store: NextPage = () => {
                 )}
               </button>
             </div>
-            <div className="mt-30 h-full">
-              {selectedCategory?.children?.length ? (
-                <ReactWindowScroller isGrid>
-                  {({ ref, outerRef, style, onScroll }: any) => {
-                    return (
-                      <Grid
-                        ref={ref}
-                        style={style}
-                        outerRef={outerRef}
-                        onScroll={onScroll}
-                        className="overflow-visible"
-                        direction="rtl"
-                        columnCount={4}
-                        columnWidth={220}
-                        rowHeight={315}
-                        height={window.innerHeight}
-                        width={window.innerWidth}
-                        rowCount={Math.ceil(selectedCategory.children!.length / 4)}
-                      >
-                        {Cell}
-                      </Grid>
-                    );
-                  }}
-                </ReactWindowScroller>
-              ) : (
-                ""
-              )}
-              {searchQuery && !selectedCategory?.children?.length ? (
-                <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
-                  לא נמצאו תוצאות לחיפוש
-                </div>
-              ) : (
-                ""
-              )}
+            <div className="store-widget">
+              <div className="mt-30 h-full">
+                {selectedCategory?.children?.length ? (
+                  <ReactWindowScroller isGrid>
+                    {({ ref, outerRef, style, onScroll }: any) => {
+                      return (
+                        <Grid
+                          ref={ref}
+                          style={style}
+                          outerRef={outerRef}
+                          onScroll={onScroll}
+                          className="overflow-visible"
+                          direction="rtl"
+                          columnCount={gridColumnCount}
+                          columnWidth={minimizeSideCart ? 248 : 220}
+                          rowHeight={315}
+                          height={window.innerHeight}
+                          width={window.innerWidth}
+                          rowCount={Math.ceil(selectedCategory.children!.length / 4)}
+                        >
+                          {Cell}
+                        </Grid>
+                      );
+                    }}
+                  </ReactWindowScroller>
+                ) : (
+                  ""
+                )}
+                {searchQuery && !selectedCategory?.children?.length ? (
+                  <div className="font-blue font-heebo text-weight-600 font-size-22 no-wrap">
+                    לא נמצאו תוצאות לחיפוש
+                  </div>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           </div>
-          <SideCart></SideCart>
+          <SideCart minimizeSideCart={minimizeSideCart} setMinimizeSideCart={setMinimizeSideCart} />
         </div>
       </div>
     </div>

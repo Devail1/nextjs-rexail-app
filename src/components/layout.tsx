@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <div className="bg">
+    <div className="bg ">
       <HeaderMenu />
       <main>{children}</main>
       <FooterMenu />

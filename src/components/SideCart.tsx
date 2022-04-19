@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import useScrollPosition from "hooks/useScrollPosition";
 import Link from "next/link";
@@ -7,7 +7,12 @@ import { TProduct } from "types";
 import List from "./List";
 import SideCartItem from "./SideCartItem";
 
-const SideCart = () => {
+type Props = {
+  minimizeSideCart: boolean;
+  setMinimizeSideCart: Dispatch<SetStateAction<boolean>>;
+};
+
+const SideCart = ({ minimizeSideCart, setMinimizeSideCart }: Props) => {
   const {
     cart: { cartItems, cartTotal },
     config: { currencySign },
@@ -28,11 +33,13 @@ const SideCart = () => {
   }, [scrollPosition]);
 
   return (
-    <div className="side-cart-wrapper ">
+    <div className={minimizeSideCart ? "side-cart-wrapper minimized" : "side-cart-wrapper"}>
       {typeof window !== "undefined" ? (
-        <section className="side-cart " ref={containerRef} style={{ height: containerHeight - 15 }}>
+        <section className="side-cart" ref={containerRef} style={{ height: containerHeight - 20 }}>
           <div className="side-cart-header display-flex align-center px-16">
-            <img className="w-22 h-22 ml-10" src="/icons/button-arrow-up.svg" />
+            <button className="mt-5" type="button" onClick={() => setMinimizeSideCart(!minimizeSideCart)}>
+              <img className="w-22 h-22 ml-10 c-p" src="/icons/button-arrow-up.svg" />
+            </button>
             <img className="icon-basket" src="/icons/icon-basket-green.svg" />
             <span className="text-sm font-white mt-8 side-cart-items-count">{cartItems.length}</span>
             <div className="display-flex flex-vertical font-white mr-8 ml-auto">
@@ -68,7 +75,7 @@ const SideCart = () => {
               <span className="mr-5 font-size-14"> מחיקת סל </span>
             </button>
           </div>
-          <div className="cart-items-preview-wrapper" style={{ height: containerHeight - 200 }}>
+          <div className="cart-items-preview-wrapper" style={{ height: containerHeight - 220 }}>
             {!cartItems.length ? (
               <div className="display-flex flex-vertical align-center pt-20">
                 <img src="/images/empty-basket.png" />

@@ -4,9 +4,10 @@ import { TProduct, Unit } from "types";
 export interface IStoreItemProps {
   product: TProduct;
   currencySign: string;
+  gridColumnWidth: number;
 }
 
-const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
+const StoreItem = ({ product, currencySign, gridColumnWidth }: IStoreItemProps) => {
   const dispatch = useDispatch();
 
   let {
@@ -24,7 +25,10 @@ const StoreItem = ({ product, currencySign }: IStoreItemProps) => {
   } = product;
 
   return (
-    <div className="store-item rounded-10 display-flex flex-vertical align-center justify-around">
+    <div
+      className="store-item rounded-10 display-flex flex-vertical align-center justify-around"
+      style={{ width: gridColumnWidth }}
+    >
       <div className="store-item-overlay font-gray-900 text-sm pb-22">
         <div className="display-flex flex-vertical align-center justify-around h-full">
           <span>{fullName}</span>
