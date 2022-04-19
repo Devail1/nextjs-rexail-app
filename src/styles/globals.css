@@ -80,6 +80,7 @@ body {
 
 .bg {
   background-color: #eef1ef;
+  overflow: clip;
 }
 
 .main-bg {
@@ -159,7 +160,6 @@ body {
 }
 
 .side-cart-wrapper {
-  align-self: flex-start;
   position: sticky;
   top: 160px;
   margin-right: 22px;
@@ -176,9 +176,7 @@ body {
 }
 
 .side-cart {
-  /* align-self: flex-start; */
   overflow: hidden;
-  /* position: -webkit-sticky; */
   position: sticky;
   top: 160px;
   bottom: 0px;
@@ -1045,6 +1043,10 @@ button:disabled {
   overflow: visible !important;
 }
 
+.overflow-hidden {
+  overflow: hidden;
+}
+
 .not-active {
   pointer-events: none;
   cursor: default;
@@ -1187,6 +1189,12 @@ button:disabled {
 
 .rotate-180 {
   transform: rotate(180deg);
+  transition: transform 0.5s;
+}
+
+.rotate-0 {
+  transform: rotate(0deg);
+  transition: transform 0.5s;
 }
 
 /* Cursor */

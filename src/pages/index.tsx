@@ -2,6 +2,7 @@ import { TCategory, TProduct } from "types";
 import type { GetStaticProps, NextPage } from "next";
 
 import { useEffect, useCallback, useState } from "react";
+import useMediaQuery from "hooks/useMediaQuery";
 
 import Head from "next/head";
 
@@ -23,11 +24,14 @@ const Store: NextPage = () => {
 
   const dispatch = useDispatch();
 
+  const lg = useMediaQuery("(max-width: 1270px)");
+  const md = useMediaQuery("(max-width: 1024px)");
+
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
   const [minimizeSideCart, setMinimizeSideCart] = useState(false);
   const [gridColumnCount, setGridColumnCount] = useState(4);
-  const [gridColumnWidth, setGridColumnWidth] = useState(4);
+  const [gridColumnWidth, setGridColumnWidth] = useState(208);
   const [selectedSortBy, setSelectedSortBy] = useState<string>("");
   const [isSortDropdownToggled, setIsSortDropdownToggled] = useState(false);
 
@@ -40,18 +44,25 @@ const Store: NextPage = () => {
   useEffect(() => {
     if (minimizeSideCart) {
       setTimeout(() => {
-        setGridColumnCount(5);
+        setGridColumnCount((prev) => prev + 1);
         setGridColumnWidth(230);
       }, 600);
     } else {
-      setGridColumnCount(4);
+      setGridColumnCount((prev) => prev - 1);
       setGridColumnWidth(208);
     }
   }, [minimizeSideCart]);
 
   useEffect(() => {
+    if (lg) {
+      setGridColumnCount(3);
+      if (md) setGridColumnCount(2);
+    } else setGridColumnCount(4);
+  }, [lg, md]);
+
+  useEffect(() => {
     let debounce = setTimeout(() => {
-      if (selectedCategory.children) {
+      if (selectedCategory?.children) {
         let currentCategory = productsCatalog.filter(
           (category: TCategory) => category.id === selectedCategory.id
         )[0];
