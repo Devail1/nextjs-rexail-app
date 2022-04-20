@@ -160,6 +160,7 @@ body {
 }
 
 .side-cart-wrapper {
+  margin-bottom: 200px;
   position: sticky;
   top: 160px;
   margin-right: 22px;

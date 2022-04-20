@@ -54,10 +54,15 @@ const Store: NextPage = () => {
   }, [minimizeSideCart]);
 
   useEffect(() => {
-    if (lg) {
+    if (lg && md) {
+      setGridColumnCount(2);
+      // setGridColumnCount((prev) => prev - 1);
+    } else if (lg) {
+      // setGridColumnCount((prev) => prev - 1);
       setGridColumnCount(3);
-      if (md) setGridColumnCount(2);
-    } else setGridColumnCount(4);
+    }
+    // setGridColumnCount((prev) => prev + 1);
+    else setGridColumnCount(4);
   }, [lg, md]);
 
   useEffect(() => {
@@ -183,7 +188,10 @@ const Store: NextPage = () => {
 
       <div className="container mx-auto pt-20">
         <div className="display-flex relative">
-          <div className="store-widget-wrapper display-flex flex-vertical ">
+          <div
+            className="store-widget-wrapper display-flex flex-vertical "
+            style={{ width: lg && md ? 480 : lg ? 680 : 880 }}
+          >
             <div className="display-flex justify-between align-center">
               <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
               <button
