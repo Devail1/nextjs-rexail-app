@@ -24,8 +24,8 @@ const Store: NextPage = () => {
 
   const dispatch = useDispatch();
 
-  const lg = useMediaQuery("(max-width: 1270px)");
-  const md = useMediaQuery("(max-width: 1024px)");
+  const lg = useMediaQuery("(max-width: 1350px)");
+  const md = useMediaQuery("(max-width: 1050px)");
 
   const [selectedCategory, setSelectedCategory] = useState<TCategory>({} as TCategory);
 
@@ -42,28 +42,22 @@ const Store: NextPage = () => {
   }, [productsCatalog]);
 
   useEffect(() => {
-    if (minimizeSideCart) {
-      setTimeout(() => {
-        setGridColumnCount((prev) => prev + 1);
-        setGridColumnWidth(230);
-      }, 600);
+    if (!minimizeSideCart) {
+      if (lg && md) setGridColumnCount(2);
+      else if (lg) setGridColumnCount(3);
+      else {
+        setGridColumnCount(4);
+        setGridColumnWidth(208);
+      }
     } else {
-      setGridColumnCount((prev) => prev - 1);
-      setGridColumnWidth(208);
+      if (lg && md) setGridColumnCount(3);
+      else if (lg) setGridColumnCount(4);
+      else {
+        setGridColumnCount(5);
+        setGridColumnWidth(230);
+      }
     }
-  }, [minimizeSideCart]);
-
-  useEffect(() => {
-    if (lg && md) {
-      setGridColumnCount(2);
-      // setGridColumnCount((prev) => prev - 1);
-    } else if (lg) {
-      // setGridColumnCount((prev) => prev - 1);
-      setGridColumnCount(3);
-    }
-    // setGridColumnCount((prev) => prev + 1);
-    else setGridColumnCount(4);
-  }, [lg, md]);
+  }, [lg, md, minimizeSideCart]);
 
   useEffect(() => {
     let debounce = setTimeout(() => {
@@ -189,8 +183,10 @@ const Store: NextPage = () => {
       <div className="container mx-auto pt-20">
         <div className="display-flex relative">
           <div
-            className="store-widget-wrapper display-flex flex-vertical "
-            style={{ width: lg && md ? 480 : lg ? 680 : 880 }}
+            className="store-widget-wrapper display-flex flex-vertical px-28"
+            style={{
+              width: gridColumnCount === 3 ? 680 : gridColumnCount === 2 ? 480 : 880,
+            }}
           >
             <div className="display-flex justify-between align-center">
               <h1 className="font-heebo font-blue">{selectedCategory?.name}</h1>
